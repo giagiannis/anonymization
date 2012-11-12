@@ -13,8 +13,8 @@ public class DataReader {
 
 	public DataReader(String filename) throws FileNotFoundException{
 		this.filename=filename;
-		file = new BufferedReader(new FileReader(this.filename));
-		set = new EquivalenceClass();
+		this.file = new BufferedReader(new FileReader(this.filename));
+		this.set = new EquivalenceClass();
 		
 	}
 	

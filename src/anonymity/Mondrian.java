@@ -7,7 +7,7 @@ import data.Tuple;
 public class Mondrian extends Algorithm {
 
 	private int[] generalRanges;
-	private boolean relaxedPartitioning;
+	private boolean relaxedPartitioning=true;
 	
 	public Mondrian(){
 		super();
@@ -34,7 +34,7 @@ public class Mondrian extends Algorithm {
 			this.stepRelaxed(this.getData());
 	}
 	
-	public int chooseDimension(EquivalenceClass partition){
+	private int chooseDimension(EquivalenceClass partition){
 		double maxRange=partition.getRangeByDimension(this.qid[0])/(1.0*this.generalRanges[this.qid[0]]);
 		int index=this.qid[0];
 		for(int i=0;i<this.qid.length;i++){
@@ -48,7 +48,7 @@ public class Mondrian extends Algorithm {
 		return index;
 	}
 	
-	public void stepStrict(EquivalenceClass partition){
+	private void stepStrict(EquivalenceClass partition){
 		if(partition.size()<2*this.getK())
 			this.addToResults(partition);
 		else{
@@ -74,7 +74,7 @@ public class Mondrian extends Algorithm {
 		}
 	}
 	
-	public void stepRelaxed(EquivalenceClass partition){
+	private void stepRelaxed(EquivalenceClass partition){
 		if(partition.size()<2*this.getK())
 			this.addToResults(partition);
 		else{
@@ -100,7 +100,7 @@ public class Mondrian extends Algorithm {
 		}
 	}
 	
-	public int findMedian(EquivalenceClass partition, int dimension){
+	private int findMedian(EquivalenceClass partition, int dimension){
 		int[] values=partition.getValuesByDimension(dimension);
 		Arrays.sort(values);
 		return values[partition.size()/2];
@@ -114,7 +114,7 @@ public class Mondrian extends Algorithm {
 		this.relaxedPartitioning=false;
 	}
 	
-	public static void main(String[] args){
+/*	public static void main(String[] args){
 		String[] 	t1 = {"25",	"Male",		"53710",	"Flu"},
 					t2 = {"25",	"Female",	"53712",	"Hepatites"},
 					t3 = {"26",	"Male",		"53711",	"Brochitis"},
@@ -139,6 +139,6 @@ public class Mondrian extends Algorithm {
 		algo.run();
 		System.out.println(algo.getResults());
 		
-	}
+	}*/
 	
 }
