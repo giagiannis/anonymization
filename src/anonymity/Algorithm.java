@@ -10,14 +10,16 @@ public abstract class Algorithm {
 	protected int[] qid;
 	private EquivalenceClass data;
 	private ResultsClass results;
+	private int k;
 	
 	public Algorithm(){
-		;
+		this.results = new ResultsClass();
 	}
 	
 	public Algorithm(int[] qid, EquivalenceClass data){
 		this.setQID(qid);
 		this.setData(data);
+		this.results = new ResultsClass();
 	}
 
 	public void setQID(int qid[]){
@@ -42,10 +44,22 @@ public abstract class Algorithm {
 		return this.data;
 	}
 
+	public void setK(int k){
+		this.k=k;
+	}
+	
+	public int getK(){
+		return this.k;
+	}
+	
 	public abstract void run();
 	
 	public ResultsClass getResults(){
 		return this.results;
+	}
+	
+	protected void addToResults(EquivalenceClass eq){
+		this.results.add(eq);
 	}
 
 }
