@@ -8,6 +8,7 @@ import data.Tuple;
 public abstract class Algorithm {
 
 	protected int[] qid;
+	protected int[] generalRanges;
 	private EquivalenceClass data;
 	private ResultsClass results;
 	private int k;
@@ -38,10 +39,17 @@ public abstract class Algorithm {
 	
 	public void setData(EquivalenceClass data){
 		this.data=data;
+		this.generalRanges = new int[data.get(0).getNumberOfAttributes()];
+		for(int dim:this.qid)
+			this.generalRanges[dim]=data.getRangeByDimension(dim);
 	}
 
 	public EquivalenceClass getData(){
 		return this.data;
+	}
+	
+	public int[] getRanges(){
+		return this.generalRanges;
 	}
 
 	public void setK(int k){
@@ -61,5 +69,4 @@ public abstract class Algorithm {
 	protected void addToResults(EquivalenceClass eq){
 		this.results.add(eq);
 	}
-
 }

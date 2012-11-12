@@ -6,7 +6,6 @@ import data.Tuple;
 
 public class Mondrian extends Algorithm {
 
-	private int[] generalRanges;
 	private boolean relaxedPartitioning=true;
 	
 	public Mondrian(){
@@ -17,15 +16,6 @@ public class Mondrian extends Algorithm {
 		super(qid,data);
 	}
 	
-	@Override
-	public void setData(EquivalenceClass data){
-		super.setData(data);
-		this.generalRanges = new int[data.get(0).getNumberOfAttributes()];
-		for(int dim:this.qid)
-			this.generalRanges[dim]=data.getRangeByDimension(dim);
-
-	}
-
 	@Override
 	public void run() {
 		if(!this.relaxedPartitioning)
