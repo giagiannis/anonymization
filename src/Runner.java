@@ -21,19 +21,17 @@ public class Runner {
 		Runner.args=args;
 		DataReader reader = new DataReader(getValue("-file"));
 		EquivalenceClass data = new EquivalenceClass();
-//		data = reader.getTuples();
 		int numberOfTuples = new Integer(getValue("-tuples"));
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-	//	System.out.println(data);
 		int qid[]={0,1,2,3,4};
 		
 		Mondrian algo = new Mondrian();
 		algo.setQID(qid);
 		algo.setData(data);
-		algo.setK(2);
+		algo.setK(10);
 		algo.setRelaxedPartitioning();
 		algo.run();
-		System.out.println(algo.getResults().getGCP(qid, algo.getRanges(), data.getNumberOfTuples()));
+		System.out.print(algo.getResults().getGCP(qid, algo.getRanges(), data.getNumberOfTuples())+"\t");
 	}
 }
