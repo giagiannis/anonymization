@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 /**
  * @author Giannis Giannakopoulos	
- * Container class that is used to keep data-tuples. It extends ArrayList class
+ * <p>
+ * Container class that is used to keep data-tuples. It extends ArrayList class.
+ * </p>
  * */
 public class EquivalenceClass extends ArrayList<Tuple> {
 
@@ -31,6 +33,17 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 			values[i]=this.get(i).getValue(dimension);
 		return values;
 		
+	}
+	
+	public int getNumberOfTuples(){
+		return this.size();
+	}
+	
+	public double getNCP(int qid[], int ranges[]){
+		double sum=0;
+		for(int dim:qid)
+			sum+=getRangeByDimension(dim)/(1.0*ranges[dim]);
+		return sum;
 	}
 	
 	public String toString(){
