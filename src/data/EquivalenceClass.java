@@ -25,12 +25,24 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 		return max-min+1;
 	}
 	
+	public int[] getValuesByDimension(int dimension){
+		int[] values = new int[this.size()];
+		for(int i=0;i<this.size();i++)
+			values[i]=this.get(i).getValue(dimension);
+		return values;
+		
+	}
+	
 	public String toString(){
 		String buffer="[";
 		int i;
-		for(i=0;i<this.size()-1;i++)
-			buffer+="("+this.get(i)+"),";
-		buffer+="("+this.get(i)+")]";
+		if(this.size()>=1){
+			for(i=0;i<this.size()-1;i++)
+				buffer+="("+this.get(i)+"),";
+			buffer+="("+this.get(i)+")]";
+		}
+		else
+			buffer+="]";
 		return buffer;
 	}
 }
