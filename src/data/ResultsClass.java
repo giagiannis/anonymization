@@ -17,6 +17,13 @@ public class ResultsClass extends ArrayList<EquivalenceClass> {
 		return gcp;
 	}
 	
+	public double getGCP(String qid[], int ranges[], int numberOfTuples){
+		int qidI[] = new int[qid.length];
+		for(int i=0;i<qidI.length;i++)
+			qidI[i] = new Integer(qid[i]);
+		return getGCP(qidI, ranges, numberOfTuples);
+	}
+	
 	public String toString(){
 		String buffer="";
 		for(int i=0;i<this.size();i++)
