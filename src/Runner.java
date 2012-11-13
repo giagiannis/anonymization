@@ -1,8 +1,10 @@
 import java.io.IOException;
 
+import readers.ConfReader;
+import readers.DataReader;
+
 import anonymity.Mondrian;
 
-import data.DataReader;
 import data.EquivalenceClass;
 
 
@@ -13,7 +15,7 @@ import data.EquivalenceClass;
 
 public class Runner {
 
-	public static String args[];
+	private static String args[];
 
 	/**	static method String get value for returning params	
 	 * hello world again!!
@@ -26,18 +28,28 @@ public class Runner {
 	}
 	
 	public static void main(String[] args) throws IOException{
+		if(args.length<1){
+			System.err.println("Give a configuration file with flag -file");
+			System.exit(1);
+		}
 		Runner.args=args;
-		DataReader reader = new DataReader(getValue("-file"));
-		EquivalenceClass data = new EquivalenceClass();
-		int numberOfTuples = new Integer(getValue("-tuples"));
-		for(int i=0;i<numberOfTuples;i++)
-			data.add(reader.getNextTuple());
-		int qid[]={0,1,2,3,4};
 		
+		ConfReader conf = new ConfReader(getValue("-file"));
+		DataReader datareader = new DataReader(conf.getValue("datafile"));
+		EquivalenceClass data = new EquivalenceClass();
+		System.out.println(conf.getValue("tuples"));
+		int temp=new Integer(conf.getValue("tuples"));
+		for(int i=0;i<temp;i++)
+			data.add(datareader.getNextTuple());
+	//	System.exit(1);
+		int k = new Integer(conf.getValue("k"));
+		String[] qid = conf.getValue("qid").split(" ");
+
+//		System.exit(1);
 		Mondrian algo = new Mondrian();
 		algo.setQID(qid);
 		algo.setData(data);
-		algo.setK(10);
+		algo.setK(k);
 		algo.setRelaxedPartitioning();
 		algo.run();
 		System.out.print(algo.getResults().getGCP(qid, algo.getRanges(), data.getNumberOfTuples())+"\t");
