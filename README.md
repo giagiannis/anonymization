@@ -1,3 +1,3 @@
-<h2>Overview</h2>
-Anonymity is a project dealing anonymity of users on large, distributed database systems.
+Anonymity is a project currently developed dealing anonymity of users on large, distributed database systems. The purpose
+of the project
 
