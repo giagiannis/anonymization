@@ -8,9 +8,9 @@ public class Mondrian extends Algorithm {
 
 	private boolean relaxedPartitioning=true;
 	
-	public Mondrian(){
-		super();
-	}
+	public Mondrian(){ 
+		super();   
+	}   
 	
 	public Mondrian(int qid[], EquivalenceClass data){
 		super(qid,data);
