@@ -17,9 +17,6 @@ public class Runner {
 
 	private static String args[];
 
-	/**	static method String get value for returning params	
-	 * hello world again!!
-	 * */
 	public static String getValue(String value){
 		for(int i=0;i<args.length;i++)
 			if(args[i].equals(value))
@@ -41,11 +38,9 @@ public class Runner {
 		int temp=new Integer(conf.getValue("tuples"));
 		for(int i=0;i<temp;i++)
 			data.add(datareader.getNextTuple());
-	//	System.exit(1);
 		int k = new Integer(conf.getValue("k"));
 		String[] qid = conf.getValue("qid").split(" ");
 
-//		System.exit(1);
 		Mondrian algo = new Mondrian();
 		algo.setQID(qid);
 		algo.setData(data);
