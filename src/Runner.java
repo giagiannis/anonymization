@@ -34,7 +34,7 @@ public class Runner {
 		ConfReader conf = new ConfReader(getValue("-file"));
 		DataReader datareader = new DataReader(conf.getValue("datafile"));
 		EquivalenceClass data = new EquivalenceClass();
-		System.out.println(conf.getValue("tuples"));
+//		System.out.println(conf.getValue("tuples"));
 		int temp=new Integer(conf.getValue("tuples"));
 		for(int i=0;i<temp;i++)
 			data.add(datareader.getNextTuple());
