@@ -15,7 +15,9 @@ public class Runner {
 
 	public static String args[];
 
-	/**	static method String get value for returning params	*/
+	/**	static method String get value for returning params	
+	 * hello world again!!
+	 * */
 	public static String getValue(String value){
 		for(int i=0;i<args.length;i++)
 			if(args[i].equals(value))
