@@ -13,6 +13,6 @@ The target of the partial distributed system is to sort data (using an effient m
 in order to get separate partitions and then, execute the centralized algorithms in the nodes of the cluster. For this purpose,
 a distributed framework such as Hadoop can be used.
 
-<h2>Fully distributed system</h2>
+<h2>Fully distributed anonymization</h2>
 On the other hand, the target of the fully distributed system is to modify a centralized algorithm in order to work in a
 distributed way. In order to achieve that the problem must be parallelized and solved in a distributed manner.    
