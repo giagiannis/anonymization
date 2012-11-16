@@ -1,12 +1,17 @@
 package anonymity;
 
+import java.io.IOException;
 import java.util.Arrays;
+
+import readers.DataReader;
 import data.EquivalenceClass;
+import data.ResultsClass;
 import data.Tuple;
 
 public class Mondrian extends Algorithm {
 
 	private boolean relaxedPartitioning=true;
+	private boolean bfs=true;
 	
 	public Mondrian(){ 
 		super();   
@@ -18,10 +23,22 @@ public class Mondrian extends Algorithm {
 	
 	@Override
 	public void run() {
-		if(!this.relaxedPartitioning)
-			this.stepStrict(this.getData());
-		else
-			this.stepRelaxed(this.getData());
+		ResultsClass current = new ResultsClass();
+		current.add(this.getData());
+		
+		while(!current.isEmpty()){
+			ResultsClass temp;
+			if(!this.relaxedPartitioning)
+				temp=this.stepStrict(current.remove(0));
+			else
+				temp=this.stepRelaxed(current.remove(0));
+			int index=0;
+			if(this.bfs)
+				index = current.size();
+			for(EquivalenceClass cl:temp)
+				current.add(index, cl);
+		}
+		
 	}
 	
 	private int chooseDimension(EquivalenceClass partition){
@@ -38,7 +55,8 @@ public class Mondrian extends Algorithm {
 		return index;
 	}
 	
-	private void stepStrict(EquivalenceClass partition){
+	private ResultsClass stepStrict(EquivalenceClass partition){
+		ResultsClass res = new ResultsClass();
 		if(partition.size()<2*this.getK())
 			this.addToResults(partition);
 		else{
@@ -59,12 +77,14 @@ public class Mondrian extends Algorithm {
 				}
 				
 			}
-			stepStrict(right);
-			stepStrict(left);
+			res.add(left);
+			res.add(right);
 		}
+		return res;
 	}
 	
-	private void stepRelaxed(EquivalenceClass partition){
+	private ResultsClass stepRelaxed(EquivalenceClass partition){
+		ResultsClass res = new ResultsClass();
 		if(partition.size()<2*this.getK())
 			this.addToResults(partition);
 		else{
@@ -85,9 +105,11 @@ public class Mondrian extends Algorithm {
 				else
 					left.add(center.get(i));
 			}
-			stepStrict(right);
-			stepStrict(left);
+			
+			res.add(right);
+			res.add(left);
 		}
+		return res;
 	}
 	
 	private int findMedian(EquivalenceClass partition, int dimension){
@@ -104,31 +126,32 @@ public class Mondrian extends Algorithm {
 		this.relaxedPartitioning=false;
 	}
 	
-/*	public static void main(String[] args){
-		String[] 	t1 = {"25",	"Male",		"53710",	"Flu"},
-					t2 = {"25",	"Female",	"53712",	"Hepatites"},
-					t3 = {"26",	"Male",		"53711",	"Brochitis"},
-					t4 = {"27",	"Male",		"53710",	"Broken Arm"},
-					t5 = {"27",	"Female",	"53712",	"AIDS"},
-					t6 = {"28",	"Male",		"53711",	"Hang Nail"},
-					t7 = {"28",	"Male",		"53710",	"Flu"};
-		int[] qid= {0,2};
-		EquivalenceClass cl = new EquivalenceClass();
-		cl.add(new Tuple(t1));
-		cl.add(new Tuple(t2));
-		cl.add(new Tuple(t3));
-		cl.add(new Tuple(t4));
-		cl.add(new Tuple(t5));
-		cl.add(new Tuple(t6));
-		cl.add(new Tuple(t7));
+	public void setBFS(){
+		this.bfs=true;
+	}
+	
+	public void setDFS(){
+		this.bfs=false;
+	}
+	
+	public static void main(String[] args) throws IOException{
+		
+
+		DataReader reader = new DataReader(args[0]);
 		Mondrian algo = new Mondrian();
+		
+		EquivalenceClass data = new EquivalenceClass();
+		for(int i=0;i<100000;i++)
+			data.add(reader.getNextTuple());
+		int[] qid= {8};
 		algo.setK(2);
 		algo.setQID(qid);
-		algo.setData(cl);
-		algo.setRelaxedPartitioning();
+		algo.setData(data);
+		algo.setStrictPartitioning();
+		algo.setBFS();
 		algo.run();
-		System.out.println(algo.getResults());
+		//System.out.println("\n"+algo.getResults());
 		
-	}*/
+	}
 	
 }
