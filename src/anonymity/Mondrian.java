@@ -105,9 +105,8 @@ public class Mondrian extends Algorithm {
 				else
 					left.add(center.get(i));
 			}
-			
-			res.add(right);
 			res.add(left);
+			res.add(right);
 		}
 		return res;
 	}
@@ -150,5 +149,4 @@ public class Mondrian extends Algorithm {
 		algo.setBFS();
 		algo.run();
 	}
-	
 }
