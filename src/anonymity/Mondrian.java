@@ -136,7 +136,6 @@ public class Mondrian extends Algorithm {
 	
 	public static void main(String[] args) throws IOException{
 		
-
 		DataReader reader = new DataReader(args[0]);
 		Mondrian algo = new Mondrian();
 		
@@ -150,8 +149,6 @@ public class Mondrian extends Algorithm {
 		algo.setStrictPartitioning();
 		algo.setBFS();
 		algo.run();
-		//System.out.println("\n"+algo.getResults());
-		
 	}
 	
 }
