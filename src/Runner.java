@@ -7,7 +7,6 @@ import anonymity.Mondrian;
 
 import data.EquivalenceClass;
 
-
 /**
  * @author Giannis Giannakopoulos <br/><br/>
  * This class is the front end application for executing centralized algorithms 
