@@ -88,10 +88,8 @@ class MyMapper extends MapReduceBase implements Mapper<LongWritable, Text, MyInt
 	public void configure(JobConf conf){
 		String[] temp=conf.get("qid").split(" ");
 		this.qid=new int[temp.length];
-		for(int i=0;i<this.qid.length;i++){
+		for(int i=0;i<this.qid.length;i++)
 			this.qid[i]=new Integer(temp[i]);
-		}
-		
 	}
 	
 	@Override
@@ -176,7 +174,7 @@ public class MedianFinder {
 	
 	public static void main(String[] args){
 		MedianFinder job = new MedianFinder();
-		job.setQID("3 7 8");
+		job.setQID("0 1 2 3 4 5 6 7 8 9");
 		if(args.length<2){
 			System.out.println("Usage:\thadoop jar <jar file> mapred.MedianFinder <input file/folder> <output folder>");
 			System.exit(1);
