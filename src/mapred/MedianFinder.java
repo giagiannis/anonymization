@@ -123,14 +123,14 @@ class MyReducer extends MapReduceBase implements Reducer<MyIntWritable, MyIntWri
 	}
 	
 }
-
+ 
 class MyPartitioner implements Partitioner<MyIntWritable, MyIntWritable>{
 
 	@Override
 	public void configure(JobConf arg0) {
 		
 	}
-
+ 
 	@Override
 	public int getPartition(MyIntWritable key, MyIntWritable value, int max) {
 		return key.getPartition()%max;

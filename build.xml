@@ -1,0 +1,41 @@
+<project name="anonymization" default="jar" basedir=".">
+	<description>
+        buildfile for creating stuff
+    </description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src" />
+	<property name="bin" location="bin" />
+	<property name="jar" location="/home/giannis/anonymity.jar"/>
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${bin}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac classpath="/opt/hadoop-1.0.4/" srcdir="${src}" destdir="${bin}" includeantruntime="true">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement location="/opt/hadoop-1.0.4/hadoop-ant-1.0.4.jar"/>
+				<pathelement location="/opt/hadoop-1.0.4/hadoop-ant-1.0.4.jar"/>
+				<pathelement location="/opt/hadoop-1.0.4/hadoop-client-1.0.4.jar"/>
+				<pathelement location="/opt/hadoop-1.0.4/hadoop-core-1.0.4.jar"/>
+				<pathelement location="/opt/hadoop-1.0.4/hadoop-test-1.0.4.jar"/>
+				<pathelement location="/opt/hadoop-1.0.4/hadoop-tools-1.0.4.jar"/>
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="jar" depends="compile" description="creates the jar file">
+		<jar destfile="${jar}" basedir="${bin}"></jar>
+	</target>
+
+	<target name="clean" description="clean up">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${bin}" />
+		<delete file="${jar}"/>
+	</target>
+</project>
