@@ -99,7 +99,7 @@ class MyMapper extends MapReduceBase implements Mapper<LongWritable, Text, MyInt
 		Tuple tuple=new Tuple(value.toString().split(","));
 		for(int i=0;i<this.qid.length;i++){
 			out.collect(new MyIntWritable(tuple.getValue(this.qid[i]), i), new MyIntWritable(1, 0));
-			System.out.println("<reducer "+i+"> "+tuple.getValue(this.qid[i]));
+		//	System.out.println("<reducer "+i+"> "+tuple.getValue(this.qid[i]));
 		}
 	}
 	
