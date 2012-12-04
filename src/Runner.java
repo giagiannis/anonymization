@@ -12,7 +12,7 @@ import data.EquivalenceClass;
  * This class is the front end application for executing centralized algorithms 
  */
 
-public class Runner {
+public class Runner { 
 
 	private static String args[];
 
