@@ -1,11 +1,12 @@
-<project name="anonymization" default="jar" basedir=".">
+<project name="anonymization" default="scp" basedir=".">
 	<description>buildfile for anonymization project</description>
 	
 	<!-- set global properties for this build -->
-	<property name="src" location="src" />
-	<property name="bin" location="bin" />
-	<property name="jar" location="/home/giannis/anonymity.jar"/>
-
+	<property name="src"	location="src" />
+	<property name="bin"	location="bin" />
+	<property name="jar"	location="/home/giannis/anonymity.jar"/>
+	<property name="remote"	value="giannis@ggian.cslab.ece.ntua.gr:~"/>
+	
 	<target name="init" description="creates necessary dirs">
 		<!-- Create the time stamp -->
 		<tstamp />
@@ -17,7 +18,7 @@
 		<!-- Compile the java code from ${src} into ${build} -->
 		<javac classpath="/opt/hadoop-1.0.4/" srcdir="${src}" destdir="${bin}" includeantruntime="true">
 			<classpath>
-<!--				<pathelement path="${classpath}"/>			-->
+				<pathelement path="${classpath}"/>
 				<pathelement location="/opt/hadoop-1.0.4/hadoop-ant-1.0.4.jar"/>
 				<pathelement location="/opt/hadoop-1.0.4/hadoop-ant-1.0.4.jar"/>
 				<pathelement location="/opt/hadoop-1.0.4/hadoop-client-1.0.4.jar"/>
@@ -27,9 +28,16 @@
 			</classpath>
 		</javac>
 	</target>
-	
+
 	<target name="jar" depends="compile" description="creates the jar file">
 		<jar destfile="${jar}" basedir="${bin}"></jar>
+	</target>
+	
+	<target name="scp" depends="jar">
+		<exec failonerror="true" executable="scp" >
+			<arg value="${jar}"/>
+			<arg value="${remote}"/>
+		</exec>
 	</target>
 
 	<target name="clean" description="clean up">
