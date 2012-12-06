@@ -143,7 +143,7 @@ public class AttributeAnalyzer {
 	
 	public void runJob(String input, String output) throws IOException{
 		JobConf conf = new JobConf(AttributeAnalyzer.class);
-		conf.setJobName("MedianFinder");
+		conf.setJobName("Attribute Analyzer");
 		
 		conf.set("qid", this.qid);
 		
@@ -160,6 +160,7 @@ public class AttributeAnalyzer {
 		conf.setInputFormat(TextInputFormat.class);
 		conf.setOutputFormat(TextOutputFormat.class);
 	
+		conf.setNumMapTasks(1);
 		conf.setNumReduceTasks(this.qid.split(" ").length);
 		
 		FileInputFormat.setInputPaths(conf, new Path(input));
