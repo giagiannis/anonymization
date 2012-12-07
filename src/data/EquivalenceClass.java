@@ -58,4 +58,15 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 			buffer+="]";
 		return buffer;
 	}
+	
+	public void merge(EquivalenceClass other){
+		for(Tuple tuple:other)
+			this.add(tuple);
+	}
+	
+	public EquivalenceClass sortByDimension(int dimension){
+		EquivalenceClass sortData = new EquivalenceClass();
+		
+		return sortData;
+	}
 }

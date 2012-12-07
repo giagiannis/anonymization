@@ -65,9 +65,9 @@ public abstract class Algorithm {
 			System.err.println("QID must be set before setting data");
 			System.exit(1);
 		}
-		this.generalRanges = new int[data.get(0).getNumberOfAttributes()];
-		for(int dim:this.qid)
-			this.generalRanges[dim]=data.getRangeByDimension(dim);
+		this.generalRanges = new int[this.qid.length];
+		for(int i=0;i<this.qid.length;i++)
+			this.generalRanges[i]=data.getRangeByDimension(this.qid[i]);
 	}
 
 	public EquivalenceClass getData(){
@@ -94,5 +94,9 @@ public abstract class Algorithm {
 	
 	protected void addToResults(EquivalenceClass eq){
 		this.results.add(eq);
+	}
+	
+	protected void setResults(ECList results){
+		this.results=results;
 	}
 }

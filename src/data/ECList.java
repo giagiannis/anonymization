@@ -9,6 +9,11 @@ public class ECList extends ArrayList<EquivalenceClass> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public void merge(ECList other){
+		for(EquivalenceClass cl:other)
+			this.add(cl);
+	}
+	
 	public double getGCP(int qid[], int ranges[], int numberOfTuples){
 		double gcp=0;
 		for(EquivalenceClass eq:this)
