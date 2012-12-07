@@ -3,7 +3,7 @@ import java.io.IOException;
 import readers.ConfReader;
 import readers.DataReader;
 
-import anonymity.Mondrian;
+import anonymity.algorithms.Mondrian;
 
 import data.EquivalenceClass;
 
