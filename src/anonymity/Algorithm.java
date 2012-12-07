@@ -1,42 +1,57 @@
 package anonymity;
 
 import data.EquivalenceClass;
-import data.ResultsClass;
-import data.Tuple;
+import data.ECList;
 
-@SuppressWarnings("unused")
+
 public abstract class Algorithm {
 
 	protected int[] qid;
 	protected int[] generalRanges;
 	private EquivalenceClass data;
-	private ResultsClass results;
+	private ECList results;
 	private int k;
 	
 	public Algorithm(){
-		this.results = new ResultsClass();
+		this.results = new ECList();
 	}
 	
 	public Algorithm(int[] qid, EquivalenceClass data){
 		this.setQID(qid);
 		this.setData(data);
-		this.results = new ResultsClass();
+		this.results = new ECList();
 	}
 
+	/**
+	 * Sets QID array as an integer array
+	 * @param qid
+	 */
 	public void setQID(int qid[]){
 		this.qid=qid;
 	}
 	
+	/**
+	 * Sets QID array as a String array and converts it to int array (useful when reading qid from file/command line)
+	 * @param qid
+	 */
 	public void setQID(String qid[]){
 		this.qid=new int[qid.length];
 		for(int i=0;i<this.qid.length;i++)
 			this.qid[i]=new Integer(qid[i]);
 	}
 	
+	/**
+	 * Get qid as an int array
+	 * @return 
+	 */
 	public int[] getQID(){
 		return this.qid;
 	}
 	
+	/**
+	 * Sets data as an EquivalenceClass (set of tuples)
+	 * @param data
+	 */
 	public void setData(EquivalenceClass data){
 		this.data=data;
 		this.generalRanges = new int[data.get(0).getNumberOfAttributes()];
@@ -62,7 +77,7 @@ public abstract class Algorithm {
 	
 	public abstract void run();
 	
-	public ResultsClass getResults(){
+	public ECList getResults(){
 		return this.results;
 	}
 	
