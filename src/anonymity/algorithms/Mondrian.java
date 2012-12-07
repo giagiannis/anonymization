@@ -7,9 +7,14 @@ import anonymity.Algorithm;
 
 import readers.DataReader;
 import data.EquivalenceClass;
-import data.ResultsClass;
+import data.ECList;
 import data.Tuple;
 
+/**
+ * Implementation of Mondrian algorithm
+ * @author Giannis Giannakopoulos
+ *
+ */
 public class Mondrian extends Algorithm {
 
 	private boolean relaxedPartitioning=true;
@@ -25,11 +30,11 @@ public class Mondrian extends Algorithm {
 	
 	@Override
 	public void run() {
-		ResultsClass current = new ResultsClass();
+		ECList current = new ECList();
 		current.add(this.getData());
 		
 		while(!current.isEmpty()){
-			ResultsClass temp;
+			ECList temp;
 			if(!this.relaxedPartitioning)
 				temp=this.stepStrict(current.remove(0));
 			else
@@ -57,8 +62,8 @@ public class Mondrian extends Algorithm {
 		return index;
 	}
 	
-	private ResultsClass stepStrict(EquivalenceClass partition){
-		ResultsClass res = new ResultsClass();
+	private ECList stepStrict(EquivalenceClass partition){
+		ECList res = new ECList();
 		if(partition.size()<2*this.getK())
 			this.addToResults(partition);
 		else{
@@ -85,8 +90,8 @@ public class Mondrian extends Algorithm {
 		return res;
 	}
 	
-	private ResultsClass stepRelaxed(EquivalenceClass partition){
-		ResultsClass res = new ResultsClass();
+	private ECList stepRelaxed(EquivalenceClass partition){
+		ECList res = new ECList();
 		if(partition.size()<2*this.getK())
 			this.addToResults(partition);
 		else{
@@ -135,7 +140,7 @@ public class Mondrian extends Algorithm {
 		this.bfs=false;
 	}
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws Exception{
 		
 		DataReader reader = new DataReader(args[0]);
 		Mondrian algo = new Mondrian();

@@ -21,6 +21,12 @@ public abstract class Algorithm {
 		this.setData(data);
 		this.results = new ECList();
 	}
+	
+	public Algorithm(String[] qid, EquivalenceClass data){
+		this.setQID(qid);
+		this.setData(data);
+		this.results = new ECList();
+	}
 
 	/**
 	 * Sets QID array as an integer array
@@ -49,11 +55,16 @@ public abstract class Algorithm {
 	}
 	
 	/**
-	 * Sets data as an EquivalenceClass (set of tuples)
+	 * Sets data as an EquivalenceClass (set of tuples)<br/>
+	 * This method must be called AFTER setQID method or else an exception will be thrown
 	 * @param data
 	 */
 	public void setData(EquivalenceClass data){
 		this.data=data;
+		if(this.qid==null){
+			System.err.println("QID must be set before setting data");
+			System.exit(1);
+		}
 		this.generalRanges = new int[data.get(0).getNumberOfAttributes()];
 		for(int dim:this.qid)
 			this.generalRanges[dim]=data.getRangeByDimension(dim);
