@@ -45,4 +45,12 @@ public class Tuple {
 		buffer+=this.values[i];
 		return buffer;
 	}
+	
+	public double getDistance(Tuple other, int[] qid, int[] ranges){
+		double res=0.0;
+		for(int i=0;i<qid.length;i++){
+			res+=(Math.abs(this.getValue(qid[i])-other.getValue(qid[i])))/(1.0*ranges[i]);
+		}
+		return res;
+	}
 }

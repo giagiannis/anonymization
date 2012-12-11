@@ -146,14 +146,16 @@ public class Mondrian extends Algorithm {
 		Mondrian algo = new Mondrian();
 		
 		EquivalenceClass data = new EquivalenceClass();
-		for(int i=0;i<100000;i++)
+		for(int i=0;i<10000;i++)
 			data.add(reader.getNextTuple());
-		int[] qid= {8};
-		algo.setK(2);
-		algo.setQID(qid);
+		//String qid="0 1 2 3 4 5 6 7 8 9";
+		String qid="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15";
+		algo.setK(10);
+		algo.setQID(qid.split(" "));
 		algo.setData(data);
-		algo.setStrictPartitioning();
-		algo.setBFS();
+		algo.setRelaxedPartitioning();
+		//algo.setBFS();
 		algo.run();
+		System.out.println(algo.getResults().getGCP(algo.getQID(), algo.getRanges(), 10000));
 	}
 }

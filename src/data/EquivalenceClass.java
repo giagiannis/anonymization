@@ -41,8 +41,8 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	
 	public double getNCP(int qid[], int ranges[]){
 		double sum=0;
-		for(int dim:qid)
-			sum+=getRangeByDimension(dim)/(1.0*ranges[dim]);
+		for(int i=0;i<qid.length;i++)
+			sum+=getRangeByDimension(qid[i])/(1.0*ranges[i]);
 		return sum;
 	}
 	
@@ -59,12 +59,21 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 		return buffer;
 	}
 	
+	public String toStringFileFormat(){
+		String buffer="";
+		for(Tuple cur:this){
+			buffer+=cur.toString()+"\n";
+		}
+		return buffer;
+	}
+	
 	public void merge(EquivalenceClass other){
 		for(Tuple tuple:other)
 			this.add(tuple);
 	}
 	
 	public EquivalenceClass sortByDimension(int dimension){
+		//FIXME
 		EquivalenceClass sortData = new EquivalenceClass();
 		
 		return sortData;
