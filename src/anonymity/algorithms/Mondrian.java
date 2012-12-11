@@ -11,7 +11,8 @@ import data.ECList;
 import data.Tuple;
 
 /**
- * Implementation of Mondrian algorithm
+ * Implementation of Mondrian algorithm. The algorithm may run in different modes and manners (eg, BFS or DFS creation of recursion tree,
+ * relaxed or strict partitioning, etc).
  * @author Giannis Giannakopoulos
  *
  */

@@ -2,7 +2,14 @@ package anonymity;
 
 import data.EquivalenceClass;
 import data.ECList;
-
+/**
+ * Base class for algorithms implementation. This class provides methods for 
+ * setting and getting data, qid, results, etc. It also includes an abstract method that must be included
+ * in every algorithm (method run with no arguments).
+ * 
+ * @author Giannis Giannakopoulos
+ *
+ */
 
 public abstract class Algorithm {
 

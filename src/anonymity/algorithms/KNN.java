@@ -7,6 +7,15 @@ import data.EquivalenceClass;
 import data.Tuple;
 import anonymity.Algorithm;
 
+/**
+ * This class implements a knn-like algorithm in order to achieve k-anonymity.
+ * The algorithm at each step finds the k-1 nearest tuples for a given tuple (for distance measuring NCP is used). 
+ * This procedure terminates when there are no tuples left ungrouped.
+ * For now, the algorithm does not handle equivalence classes with more or less than k tuples (should be fixed later).
+ * Also, this algorithm has a very high complexity and may be hard to be parallelized (needs to be fixed in the future). 
+ * @author Giannis Giannakopoulos
+ *
+ */
 public class KNN extends Algorithm {
 
 	@Override
