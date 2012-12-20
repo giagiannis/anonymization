@@ -1,4 +1,4 @@
-<project name="anonymization" default="scp" basedir=".">
+<project name="anonymization" default="jar" basedir=".">
 	<description>buildfile for anonymization project</description>
 	
 	<!-- set global properties for this build -->
