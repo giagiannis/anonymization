@@ -22,6 +22,9 @@ public class Tuple {
 	
 	public void setValues(String values[]){
 		this.values=values;
+		this.values = new String[values.length];
+		for(int i=0;i<this.values.length;i++)
+			this.values[i]=values[i].trim();
 		this.data=new int[this.values.length];
 		for(int i=0;i<this.data.length;i++)
 			this.data[i]=-1;
