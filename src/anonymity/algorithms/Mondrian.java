@@ -1,6 +1,5 @@
 package anonymity.algorithms;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import anonymity.Algorithm;
@@ -147,10 +146,9 @@ public class Mondrian extends Algorithm {
 		Mondrian algo = new Mondrian();
 		
 		EquivalenceClass data = new EquivalenceClass();
-		for(int i=0;i<10000;i++)
+		for(int i=0;i<1000;i++)
 			data.add(reader.getNextTuple());
-		//String qid="0 1 2 3 4 5 6 7 8 9";
-		String qid="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15";
+		String qid="0 1 2 3 4 5 6 7 8 9";
 		algo.setK(10);
 		algo.setQID(qid.split(" "));
 		algo.setData(data);

@@ -91,10 +91,10 @@ public class SBA extends Algorithm {
 	
 	public static void main(String[] args) throws Exception{
 		DataReader reader = new DataReader(args[0]);
-	//	String qid="0 1 2 3 4 5 6 7 8 9";
-		String qid="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15";
+		String qid="0 1 2 3 4 5 6 7 8 9";
+//		String qid="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15";
 		EquivalenceClass data = new EquivalenceClass();
-		for(int i=0;i<20000;i++)
+		for(int i=0;i<1000;i++)
 			data.add(reader.getNextTuple());
 		
 		SBA algo = new SBA(qid.split(" "), data);
