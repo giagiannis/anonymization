@@ -11,9 +11,12 @@ import data.Tuple;
 
 /**
  * This algorithm creates a graph of tuples (edges are directed) and then applies
- * k-anonymity property by using graph algorithms and minimizing NCP values of equivalence classes.<br/>
+ * k-anonymity property by using graph algorithms and minimizing NCP values of equivalence classes.
+ * Firstly, the algorithm constructs a graph based on the tuples by using GraphNode class. Graph
+ * creation is performed by populating nodes with directed edges that point out the locality between nodes.	 
  * TODO: Under development
  * @author Giannis Giannakopoulos
+ * @see GraphNode
  *
  */
 
@@ -38,27 +41,27 @@ public class GraphCreator extends Algorithm{
 	}
 	
 	@Override
-	public void run() {									// general complexity O(k*|qid|*n^2) for graph creation
-		
-		for(GraphNode node:this.getNodes())
-			this.populateTuple(node);
+	public void run() {									// graph creation: O(k*|qid|*n^2) 
+		this.populateTuples();
 		for(GraphNode n:this.nodes){
 			System.out.println(n);
 		}
 	}
 	
-	private void populateTuple(GraphNode node){
-		double maxDistance=0.0;
-		for(int i=0;i<this.getK()-1;i++)
-			maxDistance=this.getNearestNode(node, this.getNodes());
-		this.addTuplesByDistance(node, this.nodes, maxDistance);			
+	private void populateTuples(){				// complexity: O(k*|qid|*n^2)
+		for(GraphNode node:this.nodes){			// complexity: O(k*|qid|*n) (per iteration)
+			double maxDistance=0.0;
+			for(int i=0;i<this.getK()-1;i++)				// k
+				maxDistance=this.getNearestNode(node, this.getNodes());
+			this.addTuplesByDistance(node, this.nodes, maxDistance);
+		}
 	}
 	
-	private double getNearestNode(GraphNode node, LinkedList<GraphNode> nodes){				// complexity: O(k*|qid|*n)
+	private double getNearestNode(GraphNode node, LinkedList<GraphNode> nodes){				
 		double minDistance=Double.MAX_VALUE;
 		GraphNode closest=null;
-		for(GraphNode cur: nodes){
-			double distance=node.getTuple().getDistance(cur.getTuple(), this.qid, this.generalRanges);
+		for(GraphNode cur: nodes){				// n
+			double distance=node.getTuple().getDistance(cur.getTuple(), this.qid, this.generalRanges);		//|qid|
 			if(distance<minDistance && cur!=node && !node.getLinkTo().contains(cur)){
 				closest=cur;
 				minDistance=distance;
