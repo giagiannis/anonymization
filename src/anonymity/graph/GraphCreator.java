@@ -43,9 +43,7 @@ public class GraphCreator extends Algorithm{
 	@Override
 	public void run() {									// graph creation: O(k*|qid|*n^2) 
 		this.populateTuples();
-		for(GraphNode n:this.nodes){
-			System.out.println(n);
-		}
+		System.out.println(this.nodes.size());
 	}
 	
 	private void populateTuples(){				// complexity: O(k*|qid|*n^2)
@@ -84,11 +82,12 @@ public class GraphCreator extends Algorithm{
 	/**
 	 * @param args
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		DataReader reader = new DataReader(args[0]);
 		EquivalenceClass data = new EquivalenceClass();
-		for(int i=0;i<20;i++)
+		for(int i=0;i<2000;i++)
 			data.add(reader.getNextTuple());
 //		String qid="0 1 2 3 4 5 6 7 8 9";
 		String qid="0 1";
@@ -96,6 +95,4 @@ public class GraphCreator extends Algorithm{
 		gr.setK(2);
 		gr.run();
 	}	
-
-
 }
