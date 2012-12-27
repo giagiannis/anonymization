@@ -43,7 +43,9 @@ public class GraphCreator extends Algorithm{
 	@Override
 	public void run() {									// graph creation: O(k*|qid|*n^2) 
 		this.populateTuples();
-		System.out.println(this.nodes.size());
+		for(GraphNode node:this.getNodes()){
+	//		System.out.println(node);
+		}
 	}
 	
 	private void populateTuples(){				// complexity: O(k*|qid|*n^2)
@@ -79,6 +81,22 @@ public class GraphCreator extends Algorithm{
 		}
 	}
 	
+	public void runBFS(GraphNode node){
+		LinkedList<GraphNode> visited = new LinkedList<GraphNode>(), nodes = new LinkedList<GraphNode>();
+		nodes.add(node);
+		visited.add(node);
+		while(!nodes.isEmpty()){
+			GraphNode current=nodes.get(0);
+			System.out.println(current);
+			visited.add(current);
+			nodes.remove(0);
+			for(GraphNode linkto:current.getLinkTo()){
+				if(!visited.contains(linkto))
+					nodes.addLast(linkto);
+			}
+		}
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -87,12 +105,16 @@ public class GraphCreator extends Algorithm{
 	public static void main(String[] args) throws IOException, InterruptedException {
 		DataReader reader = new DataReader(args[0]);
 		EquivalenceClass data = new EquivalenceClass();
-		for(int i=0;i<2000;i++)
+		for(int i=0;i<10;i++)
 			data.add(reader.getNextTuple());
 //		String qid="0 1 2 3 4 5 6 7 8 9";
 		String qid="0 1";
 		GraphCreator gr = new GraphCreator(qid, data);
 		gr.setK(2);
 		gr.run();
+		for(GraphNode node:gr.getNodes()){
+			gr.runBFS(node);			
+			System.out.print("\n");
+		}
 	}	
 }

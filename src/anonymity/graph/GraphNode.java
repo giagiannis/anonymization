@@ -41,12 +41,12 @@ public class GraphNode {
 	
 	public String toString(){
 		String buffer="";
-		buffer+=this.getTuple().toString()+"\t[";
+		buffer+=this.getTuple().toString()+"\nPoint to:\t[";
 		for(GraphNode node:this.linkTo){
 			buffer+="("+node.getTuple().toString()+")";
 		}
 		buffer+="]";
-		buffer+="\t[";
+		buffer+="\nPoint by:\t[";
 		for(GraphNode node:this.linkBy){
 			buffer+="("+node.getTuple().toString()+")";
 		}
