@@ -11,12 +11,13 @@ import data.Tuple;
 public class GraphNode {
 
 	private Tuple tuple;
-	private LinkedList<GraphNode> linkTo, linkBy;
+	private LinkedList<GraphNode> linkTo, linkBy, link;
 
 	public GraphNode(Tuple tuple){
 		this.tuple=tuple;
 		this.linkTo= new LinkedList<GraphNode>();
 		this.linkBy= new LinkedList<GraphNode>();
+		this.link= new LinkedList<GraphNode>();
 	}
 	
 	public LinkedList<GraphNode> getLinkBy() {
@@ -26,6 +27,10 @@ public class GraphNode {
 	public LinkedList<GraphNode> getLinkTo() {
 		return this.linkTo;
 	}
+	
+	public LinkedList<GraphNode> getLinks(){
+		return this.link;
+	}
 
 	public Tuple getTuple(){
 		return this.tuple; 
@@ -33,15 +38,28 @@ public class GraphNode {
 	
 	public void addLinkTo(GraphNode node){
 		this.linkTo.add(node);
+		if(!this.link.contains(node))
+			this.link.addLast(node);
 	}
 	
 	public void addLinkBy(GraphNode node){
 		this.linkBy.add(node);
+		if(!this.link.contains(node))
+			this.link.addLast(node);
+	}
+	
+	public int getGradeIn(){
+		return this.linkBy.size();
+	}
+	
+	public int getGradeOut(){
+		return this.linkTo.size();
 	}
 	
 	public String toString(){
-		String buffer="";
-		buffer+=this.getTuple().toString()+"\nPoint to:\t[";
+		String buffer="("+this.getTuple().toString()+")";
+		return buffer;
+	/*	buffer+="\nPoint to:\t[";
 		for(GraphNode node:this.linkTo){
 			buffer+="("+node.getTuple().toString()+")";
 		}
@@ -51,7 +69,7 @@ public class GraphNode {
 			buffer+="("+node.getTuple().toString()+")";
 		}
 		buffer+="]";
-		return buffer;
+		return buffer;*/
 	}
 	
 }
