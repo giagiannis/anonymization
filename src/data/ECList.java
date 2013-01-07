@@ -22,6 +22,20 @@ public class ECList extends ArrayList<EquivalenceClass> {
 		return gcp;
 	}
 	
+	public double getSumOfNCP(int qid[], int ranges[]){
+		double sum=0.0;
+		for(EquivalenceClass cl:this)
+			sum+=cl.getNCP(qid, ranges);
+		return sum;
+	}
+	
+	public double getDM(){
+		double sum=0;
+		for(EquivalenceClass cl:this)
+			sum+=Math.pow(cl.size(), 2);
+		return sum;
+	}
+	
 	public double getGCP(String qid[], int ranges[], int numberOfTuples){
 		int qidI[] = new int[qid.length];
 		for(int i=0;i<qidI.length;i++)

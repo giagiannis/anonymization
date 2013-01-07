@@ -106,4 +106,5 @@ public abstract class Algorithm {
 	protected void setResults(ECList results){
 		this.results=results;
 	}
+	
 }

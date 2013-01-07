@@ -49,6 +49,14 @@ public class Tuple {
 		return buffer;
 	}
 	
+	public boolean equals(Tuple other, int qid[]){
+		for(int d:qid){
+			if(this.getValue(d)!=other.getValue(d))
+				return false;
+		}
+		return true;
+	}
+	
 	public double getDistance(Tuple other, int[] qid, int[] ranges){
 		double res=0.0;
 		for(int i=0;i<qid.length;i++){

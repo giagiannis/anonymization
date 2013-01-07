@@ -15,6 +15,15 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public EquivalenceClass(){
+		super();
+	}
+	
+	public EquivalenceClass(Tuple t){
+		super();
+		this.add(t);
+	}
+	
 	public int getRangeByDimension(int dimension){
 		int max=this.get(0).getValue(dimension),min=this.get(0).getValue(dimension);
 		for(Tuple t:this){
@@ -70,12 +79,5 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	public void merge(EquivalenceClass other){
 		for(Tuple tuple:other)
 			this.add(tuple);
-	}
-	
-	public EquivalenceClass sortByDimension(int dimension){
-		//FIXME
-		EquivalenceClass sortData = new EquivalenceClass();
-		
-		return sortData;
 	}
 }

@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="/opt/hadoop-1.0.4/hadoop-minicluster-1.0.4.jar"/>
 	<classpathentry kind="lib" path="/opt/hadoop-1.0.4/hadoop-test-1.0.4.jar"/>
 	<classpathentry kind="lib" path="/opt/hadoop-1.0.4/hadoop-tools-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/opt/jgrapht-0.8.3/jgrapht-jdk1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

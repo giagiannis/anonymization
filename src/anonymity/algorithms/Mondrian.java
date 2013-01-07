@@ -3,7 +3,9 @@ package anonymity.algorithms;
 import java.util.Arrays;
 
 import anonymity.Algorithm;
+import anonymity.graph.GraphCreator;
 
+import readers.ConfReader;
 import readers.DataReader;
 import data.EquivalenceClass;
 import data.ECList;
@@ -23,6 +25,10 @@ public class Mondrian extends Algorithm {
 	public Mondrian(){ 
 		super();   
 	}   
+	
+	public Mondrian(String qid, EquivalenceClass data){
+		super(qid.split(" "),data);
+	}
 	
 	public Mondrian(int qid[], EquivalenceClass data){
 		super(qid,data);
@@ -142,19 +148,17 @@ public class Mondrian extends Algorithm {
 	
 	public static void main(String[] args) throws Exception{
 		
-		DataReader reader = new DataReader(args[0]);
-		Mondrian algo = new Mondrian();
-		
-		EquivalenceClass data = new EquivalenceClass();
-		for(int i=0;i<1000;i++)
-			data.add(reader.getNextTuple());
-		String qid="0 1 2 3 4 5 6 7 8 9";
-		algo.setK(10);
-		algo.setQID(qid.split(" "));
-		algo.setData(data);
-		algo.setRelaxedPartitioning();
-		//algo.setBFS();
+		ConfReader conf = new ConfReader(args[0]);
+		DataReader reader = new DataReader(conf.getValue("FILE"));
+		String qid=conf.getValue("QID");
+		EquivalenceClass data=reader.getTuples();
+		Mondrian algo = new Mondrian(qid, data);
+		algo.setK(new Integer(conf.getValue("K")));
+		algo.setStrictPartitioning();
+		algo.setDFS();
 		algo.run();
-		System.out.println(algo.getResults().getGCP(algo.getQID(), algo.getRanges(), 10000));
+		System.out.println(algo.getResults().getGCP(algo.getQID(), algo.getRanges(), data.size()));
+		System.out.println("Sum of NCP:\t"+algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
+		System.out.println("DM:\t"+algo.getResults().getDM());
 	}
 }

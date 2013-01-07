@@ -15,7 +15,7 @@ public class ConfReader {
 		this.reader.seek(0);
 		String buffer = this.reader.readLine();
 		while(buffer!=null){
-			if(buffer.split("\t")[0].equals(value))
+			if(!buffer.startsWith("#") && buffer.split("\t")[0].equals(value))
 				return buffer.split("\t")[buffer.split("\t").length-1];
 			else
 				buffer = this.reader.readLine();

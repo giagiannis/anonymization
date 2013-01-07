@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import anonymity.Algorithm;
 
+import readers.ConfReader;
 import readers.DataReader;
 import data.EquivalenceClass;
 import data.Tuple;
@@ -42,22 +43,88 @@ public class GraphCreator extends Algorithm{
 	
 	@Override
 	public void run() {									// graph creation: O(k*|qid|*n^2) 
-		this.populateNodes();
-		LinkedList<LinkedList<GraphNode>> trees = new LinkedList<LinkedList<GraphNode>>();
-		for(GraphNode node:this.getNodes()){
-			boolean contains=false;
-			for(LinkedList<GraphNode> tree:trees){
-				if(tree.contains(node)){
-					contains=true;
-					break;
-				}
+		this.populateNodes();		//creates edges
+		LinkedList<GraphNode> roots = new LinkedList<GraphNode>();
+		for(GraphNode n:this.getNodes())
+			if(!n.getVisited())
+				roots.add(this.runBFS(n).get(0));
+		for(GraphNode n:this.getNodes())
+			n.setVisited(false);
+		
+		System.out.println(roots);
+		for(GraphNode root:this.getNodes())
+			travelToGraph(root);
+	}
+	
+	public void travelToGraph(GraphNode node){
+		System.out.println("Managing as root:\t"+node);
+		EquivalenceClass cl = new EquivalenceClass();
+		node.setVisited(true);
+		cl.add(node.getTuple());
+		GraphNode next=null;
+		
+		for(GraphNode n:node.getLinkTo()){
+			if(!n.getVisited())
+				cl.add(n.getTuple());
+			n.setVisited(true);
+		}
+		
+		for(GraphNode n:node.getLinkTo()){
+			for(GraphNode j:n.getLinkTo())
+				if(!j.getVisited())
+					next=j;
+		}
+		System.out.println(cl);
+		if(next!=null){
+			travelToGraph(next);
+		}
+			
+		
+	}
+	
+	/* Old runner method using cuts to single-dimension list
+	 * LinkedList<LinkedList<GraphNode>> trees = new LinkedList<LinkedList<GraphNode>>();
+		for(GraphNode n:this.getNodes()){
+			if(!n.getVisited())
+				trees.add(this.runBFS(n));
+		}
+		System.out.println("Number of trees:\t"+trees.size());
+		for(GraphNode n:this.getNodes())
+			n.setVisited(false);
+		for(LinkedList<GraphNode> l:trees)
+			createRes(l);
+		
+		int sum=0;
+		for(EquivalenceClass cl:this.getResults())
+			if(cl.size()<this.getK())
+				sum+=1;
+		System.out.println("Classes with less than k tuples:\t"+sum+"/"+this.getResults().size());
+		System.out.println("GCP:\t"+this.getResults().getGCP(this.qid, this.generalRanges, this.getData().size()));
+	 */
+	
+	public void createRes(LinkedList<GraphNode> nodes){
+		EquivalenceClass cl = new EquivalenceClass();
+		for(int i=0;i<nodes.size();i++){
+			if(i<=nodes.size()-this.getK() && cl.size()>=this.getK()){
+				this.addToResults(cl);
+				cl = new EquivalenceClass();
 			}
-			if(!contains)
-				trees.add(this.runBFS(node));
+			//if(i<this.nodes.size()-2*this.getK())
+			cl.add(nodes.get(i).getTuple());
+
 		}
-		for(LinkedList<GraphNode> tree:trees){
-			System.out.println(tree.size());
-		}
+		this.addToResults(cl);
+	}
+	
+	public EquivalenceClass createEquivalenceClass(GraphNode node){
+		EquivalenceClass cl = new EquivalenceClass();
+		cl.add(node.getTuple());
+		for(GraphNode n:node.getLinks())
+			if(!n.getVisited()){
+				cl.add(n.getTuple());
+				n.setVisited(true);
+			}
+		return cl; 
 	}
 	
 	private void populateNodes(){				// complexity: O(k*|qid|*n^2)
@@ -65,7 +132,26 @@ public class GraphCreator extends Algorithm{
 			double maxDistance=0.0;
 			for(int i=0;i<this.getK()-1;i++)				// k
 				maxDistance=this.getNearestNode(node, this.getNodes());
-			this.addTuplesByDistance(node, this.nodes, maxDistance);
+	//		LinkedList<GraphNode> closeNodes=
+			this.getNodesByDistance(node, this.nodes, maxDistance);
+/*			node.getLinkTo().removeAll(closeNodes);
+			
+			while(node.getLinkTo().size()<this.getK()-1){				// add nodes based on the NCP value
+				EquivalenceClass cl = node.getEC();
+				double minNCP=Double.MAX_VALUE;
+				GraphNode chosenTuple=null;
+				for(GraphNode nod: closeNodes){
+					cl.add(nod.getTuple());
+					if(minNCP>cl.getNCP(this.qid, this.generalRanges)){
+						minNCP=cl.getNCP(this.qid, this.generalRanges);
+						chosenTuple=nod;
+					}
+					cl.remove(nod.getTuple());
+				}
+				node.addLinkTo(chosenTuple);
+			}
+		*/
+			
 		}
 	}
 	
@@ -79,18 +165,21 @@ public class GraphCreator extends Algorithm{
 				minDistance=distance;
 			}
 		}
-		node.addLinkTo(closest);
-		closest.addLinkBy(node);
+		node.addLinkTo(closest,minDistance);
+		closest.addLinkBy(node, minDistance);
 		return minDistance;
 	}
 	
-	private void addTuplesByDistance(GraphNode node, LinkedList<GraphNode> nodes, double distance){
+	private LinkedList<GraphNode> getNodesByDistance(GraphNode node, LinkedList<GraphNode> nodes, double distance){
+		LinkedList<GraphNode> closestNodes = new LinkedList<GraphNode>();
 		for(GraphNode cur: nodes){
 			if(node.getTuple().getDistance(cur.getTuple(), this.qid, this.generalRanges)==distance && cur!=node && !node.getLinkTo().contains(cur)){
-				node.addLinkTo(cur);
-				cur.addLinkBy(node);
+				node.addLinkTo(cur, distance);
+				cur.addLinkBy(node, distance);
+				//closestNodes.add(cur);
 			}
 		}
+		return closestNodes;
 	}
 	
 	public LinkedList<GraphNode> runBFS(GraphNode node){
@@ -99,6 +188,7 @@ public class GraphCreator extends Algorithm{
 //		visited.add(node);
 		while(!nodes.isEmpty()){
 			GraphNode current=nodes.get(0);
+			current.setVisited(true);
 			visited.add(current);
 			nodes.remove(current);
 			for(GraphNode linkto:current.getLinks()){
@@ -115,6 +205,7 @@ public class GraphCreator extends Algorithm{
 //		visited.add(node);
 		while(!nodes.isEmpty()){
 			GraphNode current=nodes.get(0);
+			current.setVisited(true);
 			visited.add(current);
 			nodes.remove(current);
 			for(GraphNode linkto:current.getLinks()){
@@ -132,15 +223,12 @@ public class GraphCreator extends Algorithm{
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
-		DataReader reader = new DataReader(args[0]);
-//		EquivalenceClass data = new EquivalenceClass();
-//		for(int i=0;i<20;i++)
-//			data.add(reader.getNextTuple());
-		String qid="0 1 2 3 4 5 6 7 8 9";
-//		String qid="0 1";
-//		String qid="8 7 9";
+		ConfReader conf = new ConfReader(args[0]);
+		
+		DataReader reader = new DataReader(conf.getValue("FILE"));
+		String qid=conf.getValue("QID");
 		GraphCreator gr = new GraphCreator(qid, reader.getTuples());
-		gr.setK(3);
+		gr.setK(new Integer(conf.getValue("K")));
 		gr.run();
 	}	
 }
