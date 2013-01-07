@@ -111,6 +111,9 @@ public class AnonymizationByDistance extends Algorithm {
 		algo.setK(k);
 		algo.run();
 		Double gcp=algo.getResults().getGCP(algo.getQID(), algo.getRanges(), algo.getData().size());
-		System.out.println(gcp);
+		System.out.println("GCP:\t"+gcp);
+		System.out.println("Sum of NCP:\t"+algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
+		System.out.println("DM:\t"+algo.getResults().getDM());
+		System.out.println("Number of EC:\t"+algo.getResults().size());
 	}
 }

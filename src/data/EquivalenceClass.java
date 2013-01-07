@@ -33,7 +33,7 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 			if(tempValue<min)
 				min=tempValue;
 		}
-		return max-min+1;
+		return max-min;
 	}
 	
 	public int[] getValuesByDimension(int dimension){

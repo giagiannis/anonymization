@@ -160,5 +160,6 @@ public class Mondrian extends Algorithm {
 		System.out.println(algo.getResults().getGCP(algo.getQID(), algo.getRanges(), data.size()));
 		System.out.println("Sum of NCP:\t"+algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
 		System.out.println("DM:\t"+algo.getResults().getDM());
+		System.out.println("Number of EC:\t"+algo.getResults().size());
 	}
 }
