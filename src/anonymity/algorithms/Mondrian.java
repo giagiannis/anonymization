@@ -55,17 +55,17 @@ public class Mondrian extends Algorithm {
 	}
 	
 	private int chooseDimension(EquivalenceClass partition){
-		double maxRange=partition.getRangeByDimension(this.qid[0])/(1.0*this.generalRanges[this.qid[0]]);
-		int index=this.qid[0];
+		double maxRange=partition.getRangeByDimension(this.qid[0])/(1.0*this.generalRanges[0]);
+		int index=0;
 		for(int i=0;i<this.qid.length;i++){
-			double currentRange=partition.getRangeByDimension(this.qid[i])/(1.0*this.generalRanges[this.qid[i]]);
+			double currentRange=partition.getRangeByDimension(this.qid[i])/(1.0*this.generalRanges[i]);
 			if(currentRange>maxRange || 
-					(currentRange==maxRange && this.generalRanges[index]<this.generalRanges[this.qid[i]])){
+					(currentRange==maxRange && this.generalRanges[index]<this.generalRanges[i])){
 				maxRange=currentRange;
-				index=this.qid[i];
+				index=i;
 			}
 		}
-		return index;
+		return this.qid[index];
 	}
 	
 	private ECList stepStrict(EquivalenceClass partition){
@@ -147,19 +147,36 @@ public class Mondrian extends Algorithm {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		
-		ConfReader conf = new ConfReader(args[0]);
+		/*	ConfReader conf = new ConfReader(args[0]);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
 		String qid=conf.getValue("QID");
-		EquivalenceClass data=reader.getTuples();
+		Integer k = new Integer(conf.getValue("K")), numberOfTuples=new Integer(conf.getValue("TUPLES"));
+		EquivalenceClass data = new EquivalenceClass();
+		for(int i=0;i<numberOfTuples;i++)
+			data.add(reader.getNextTuple());
+		*/
+		if(args.length<2){
+			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
+			System.exit(1);
+		}
+		DataReader reader = new DataReader(Algorithm.getArgument(args, "-file"));
+		String qid=Algorithm.getArgument(args, "-qid");
+		Integer k = new Integer(Algorithm.getArgument(args, "-k")), 
+				numberOfTuples=new Integer(Algorithm.getArgument(args, "-tuples"));
+		
+		EquivalenceClass data = new EquivalenceClass();
+		for(int i=0;i<numberOfTuples;i++)
+			data.add(reader.getNextTuple());
+		
+		
 		Mondrian algo = new Mondrian(qid, data);
-		algo.setK(new Integer(conf.getValue("K")));
+		algo.setK(k);
 		algo.setStrictPartitioning();
 		algo.setDFS();
+		double start=System.currentTimeMillis();
 		algo.run();
-		System.out.println(algo.getResults().getGCP(algo.getQID(), algo.getRanges(), data.size()));
-		System.out.println("Sum of NCP:\t"+algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
-		System.out.println("DM:\t"+algo.getResults().getDM());
-		System.out.println("Number of EC:\t"+algo.getResults().size());
+		double stop = System.currentTimeMillis()-start;
+	
+		Algorithm.printResults(algo, stop);
 	}
 }

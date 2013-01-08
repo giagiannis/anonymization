@@ -101,19 +101,34 @@ public class AnonymizationByDistance extends Algorithm {
 	}
 	
 	public static void main(String args[]) throws IOException{
-		ConfReader conf = new ConfReader(args[0]);
+		/*	ConfReader conf = new ConfReader(args[0]);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
-		EquivalenceClass data = reader.getTuples();
 		String qid=conf.getValue("QID");
-		Integer k = new Integer(conf.getValue("K"));
+		Integer k = new Integer(conf.getValue("K")), numberOfTuples=new Integer(conf.getValue("TUPLES"));
+		EquivalenceClass data = new EquivalenceClass();
+		for(int i=0;i<numberOfTuples;i++)
+			data.add(reader.getNextTuple());
+		*/
+		if(args.length<2){
+			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
+			System.exit(1);
+		}
+		DataReader reader = new DataReader(Algorithm.getArgument(args, "-file"));
+		String qid=Algorithm.getArgument(args, "-qid");
+		Integer k = new Integer(Algorithm.getArgument(args, "-k")), 
+				numberOfTuples=new Integer(Algorithm.getArgument(args, "-tuples"));
+		
+		EquivalenceClass data = new EquivalenceClass();
+		for(int i=0;i<numberOfTuples;i++)
+			data.add(reader.getNextTuple());
+		
 		
 		AnonymizationByDistance algo = new AnonymizationByDistance(qid, data);
 		algo.setK(k);
+		double start=System.currentTimeMillis();
 		algo.run();
-		Double gcp=algo.getResults().getGCP(algo.getQID(), algo.getRanges(), algo.getData().size());
-		System.out.println("GCP:\t"+gcp);
-		System.out.println("Sum of NCP:\t"+algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
-		System.out.println("DM:\t"+algo.getResults().getDM());
-		System.out.println("Number of EC:\t"+algo.getResults().size());
+		double stop = System.currentTimeMillis()-start;
+		
+		Algorithm.printResults(algo, stop);
 	}
 }

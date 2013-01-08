@@ -107,4 +107,22 @@ public abstract class Algorithm {
 		this.results=results;
 	}
 	
+	protected static String getArgument(String[] args, String value){
+		for(int i=0;i<args.length;i++){
+			if(args[i].equals(value))
+				return args[i+1];
+		}
+		return null;
+	}
+	
+	protected static void printResults(Algorithm algo, double runningTime){
+		// We suppose that script expects output like: "<gcp>\t<ncp sum>\t<number of eqcl>\t<time>"
+		
+		Double gcp=algo.getResults().getGCP(algo.getQID(), algo.getRanges(), algo.getData().size());
+		System.out.format("%.5f\t",gcp);
+		System.out.format("%.5f\t",algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
+		System.out.print(algo.getResults().size()+"\t");
+		System.out.print(runningTime);
+	}
+	
 }
