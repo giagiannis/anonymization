@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
-import readers.ConfReader;
+//import readers.ConfReader;
 import readers.DataReader;
 import data.EquivalenceClass;
 import data.Tuple;
@@ -36,29 +36,28 @@ public class AnonymizationByNCP extends Algorithm {
 	}
 	
 	private EquivalenceClass createECByNCP(Tuple t){
-		EquivalenceClass ec = new EquivalenceClass(t);
+		EquivalenceClass ec = new EquivalenceClass(this.getQID());
+		ec.add(t);
 		this.visitedTuples.get(false).remove(t);
 		this.visitedTuples.get(true).add(t);
 		
-		for(int i=0;i<this.getK()-1;i++)
+		for(int i=0;i<this.getK()-1;i++)										// k iterations
 		{
 			Tuple choosenTuple=null;
 			Double minDistance=Double.MAX_VALUE;
-			for(Tuple o:this.visitedTuples.get(false)){
-				ec.add(o);
-				Double currentDistance=ec.getNCP(this.qid, this.generalRanges);
+			for(Tuple o:this.visitedTuples.get(false)){								// O(n) iterations
+				Double currentDistance=ec.getNCPwithOtherTuple(o,this.qid, this.generalRanges);			// 	|qid|
 				if(currentDistance<=minDistance){
 					choosenTuple=o;
 					minDistance=currentDistance;
 				}
-				ec.remove(o);
 			}
 			ec.add(choosenTuple);
 			this.visitedTuples.get(false).remove(choosenTuple);
 			this.visitedTuples.get(true).add(choosenTuple);
 		}
 		
-		if(ec.getNCP(qid, generalRanges)>this.getResults().getMaxNCP(qid, generalRanges)){
+		if(ec.getNCP(qid, generalRanges)>this.getResults().getMaxNCP(qid, generalRanges)){	//O(n/k)
 			EquivalenceClass other=this.findMostCloseEC(t);
 			other.add(t);
 			if(ec.getNCP(qid, generalRanges)>=other.getNCP(this.qid, this.generalRanges)){
@@ -70,7 +69,6 @@ public class AnonymizationByNCP extends Algorithm {
 			else{
 				other.remove(t);
 			}
-			
 		}
 		return ec;
 	}
@@ -78,15 +76,15 @@ public class AnonymizationByNCP extends Algorithm {
 	private EquivalenceClass findMostCloseEC(Tuple tuple){
 		EquivalenceClass cl = this.getResults().get(0);
 		double minDiff=Double.MAX_VALUE;
-		for(EquivalenceClass eqcl: this.getResults()){
-			double t1=eqcl.getNCP(this.qid, this.generalRanges), t2;
+		for(EquivalenceClass eqcl: this.getResults()){					//O(n/k)
+			double t1=eqcl.getNCP(this.qid, this.generalRanges), t2;		//O(k*|qid|)
 			eqcl.add(tuple);
-			t2=eqcl.getNCP(this.qid, this.generalRanges);
-			eqcl.remove(tuple);
+			t2=eqcl.getNCP(this.qid, this.generalRanges);					//O(k*|qid|)
+			eqcl.remove(tuple);												//O(k)
 			if(t2-t1<minDiff){
 				cl=eqcl;
 				minDiff=t2-t1;
-			}
+			}//may add one or two constaints for such actions
 		}
 		return cl;
 	}

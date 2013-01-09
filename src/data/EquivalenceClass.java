@@ -1,6 +1,7 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Giannis Giannakopoulos	
@@ -14,6 +15,8 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private int[] qid =null;
+	private HashMap<Integer, Integer> max,min;
 	
 	public EquivalenceClass(){
 		super();
@@ -24,16 +27,59 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 		this.add(t);
 	}
 	
-	public int getRangeByDimension(int dimension){
-		int max=this.get(0).getValue(dimension),min=this.get(0).getValue(dimension);
-		for(Tuple t:this){
-			int tempValue=t.getValue(dimension);
-			if(tempValue>max)
-				max=tempValue;
-			if(tempValue<min)
-				min=tempValue;
+	public EquivalenceClass(int[] qid){
+		super();
+		this.qid=qid;
+		this.max =new HashMap<Integer, Integer>();
+		this.min = new HashMap<Integer, Integer>();
+	}
+	
+	public boolean add(Tuple t){
+		super.add(t);
+		if(this.qid!=null){
+			for(int i:this.qid){
+				if((!this.max.containsKey(i))  ||  (this.max.get(i)<t.getValue(i)))
+					this.max.put(i, t.getValue(i));
+				if(!this.min.containsKey(i) || this.min.get(i)>t.getValue(i))
+					this.min.put(i, t.getValue(i));
+			}
 		}
-		return max-min;
+		return true;
+	}
+	
+	public boolean remove(Object t){
+		super.remove(t);
+		if(this.qid!=null){
+			this.max.clear();
+			this.min.clear();
+			for(Tuple a:this){
+				for(int i:this.qid){
+					if((!this.max.containsKey(i))  ||  (this.max.get(i)<a.getValue(i)))
+						this.max.put(i, a.getValue(i));
+					if(!this.min.containsKey(i) || this.min.get(i)>a.getValue(i))
+						this.min.put(i, a.getValue(i));
+				}
+			}
+		}
+		return true;
+	}
+	
+	public int getRangeByDimension(int dimension){
+		if(this.qid!=null){
+			return this.max.get(dimension)-this.min.get(dimension);
+		}
+		else
+		{
+			int max=this.get(0).getValue(dimension),min=this.get(0).getValue(dimension);
+			for(Tuple t:this){
+				int tempValue=t.getValue(dimension);
+				if(tempValue>max)
+					max=tempValue;
+				if(tempValue<min)
+					min=tempValue;
+			}
+			return max-min;
+		}
 	}
 	
 	public int[] getValuesByDimension(int dimension){
@@ -53,6 +99,30 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 		for(int i=0;i<qid.length;i++)
 			sum+=getRangeByDimension(qid[i])/(1.0*ranges[i]);
 		return sum;
+	}
+	
+	public double getNCPwithOtherTuple(Tuple t, int qid[], int ranges[]){
+		double sum=0;
+		if(this.qid!=null)
+		{
+			int count=0;
+			for(int d:this.qid){
+				int min=this.min.get(d), max=this.max.get(d);
+				if(max<t.getValue(d))
+					max=t.getValue(d);
+				if(min>t.getValue(d))
+					min=t.getValue(d);
+				sum+=(max-min)*1.0/(ranges[count]);
+				count++;
+			}
+		}
+		else{
+			this.add(t);
+			sum=this.getNCP(qid, ranges);
+			this.remove(t);
+		}
+		return sum;
+	
 	}
 	
 	public String toString(){
@@ -79,5 +149,23 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	public void merge(EquivalenceClass other){
 		for(Tuple tuple:other)
 			this.add(tuple);
+	}
+	
+	public static void main(String[] args){
+		String a="1 2", b = "2 2", c="2 1", d="1 20";
+		int qid[]={0,1}, ranges[]={1,19};
+		EquivalenceClass ec = new EquivalenceClass(qid);
+		ec.add(new Tuple(a.split(" ")));
+		ec.add(new Tuple(b.split(" ")));
+		ec.add(new Tuple(c.split(" ")));
+		Tuple t=new Tuple(d.split(" "));
+		ec.add(t);
+		for(int i:qid)
+			System.out.println(ec.getRangeByDimension(i));
+		ec.remove(t);
+		for(int i:qid)
+			System.out.println(ec.getRangeByDimension(i));
+		System.out.println(ec.getNCP(qid, ranges));
+		System.out.println(ec.getNCPwithOtherTuple(t,qid, ranges));
 	}
 }
