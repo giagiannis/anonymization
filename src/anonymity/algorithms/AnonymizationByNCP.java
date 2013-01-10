@@ -13,6 +13,7 @@ import anonymity.Algorithm;
 public class AnonymizationByNCP extends Algorithm {
 
 	private HashMap<Boolean, EquivalenceClass> visitedTuples;
+	private int count;
 	
 	public AnonymizationByNCP(String qid, EquivalenceClass data){
 		super(qid.split(" "), data);
@@ -23,9 +24,10 @@ public class AnonymizationByNCP extends Algorithm {
 	
 	@Override
 	public void run() {
+		this.count=0;
 		Random rand = new Random();
 //		Tuple previous, next;
-		while(this.visitedTuples.get(false).size()>this.getK()){
+		while(this.visitedTuples.get(false).size()>=this.getK()){
 			Tuple t = this.visitedTuples.get(false).get(rand.nextInt(this.visitedTuples.get(false).size()));
 			EquivalenceClass created=this.createECByNCP(t);
 			if(created!=null)
@@ -57,12 +59,13 @@ public class AnonymizationByNCP extends Algorithm {
 			this.visitedTuples.get(true).add(choosenTuple);
 		}
 		
-		if(ec.getNCP(qid, generalRanges)>this.getResults().getMaxNCP(qid, generalRanges)){	//O(n/k)
+		if(ec.getNCP(qid, generalRanges)>this.getResults().getMaxNCP(qid, generalRanges)){	//O(n/k)			//this method takes time!!!
 			EquivalenceClass other=this.findMostCloseEC(t);
 			other.add(t);
 			if(ec.getNCP(qid, generalRanges)>=other.getNCP(this.qid, this.generalRanges)){
+				this.count++;
 				ec.remove(t);
-				this.visitedTuples.get(true).removeAll(ec);
+	//			this.visitedTuples.get(true).removeAll(ec);				//cannot be used, the complexity is WAAY to high O(n^2)
 				this.visitedTuples.get(false).addAll(ec);
 				ec=null;
 			}
@@ -78,13 +81,11 @@ public class AnonymizationByNCP extends Algorithm {
 		double minDiff=Double.MAX_VALUE;
 		for(EquivalenceClass eqcl: this.getResults()){					//O(n/k)
 			double t1=eqcl.getNCP(this.qid, this.generalRanges), t2;		//O(k*|qid|)
-			eqcl.add(tuple);
-			t2=eqcl.getNCP(this.qid, this.generalRanges);					//O(k*|qid|)
-			eqcl.remove(tuple);												//O(k)
+			t2=eqcl.getNCPwithOtherTuple(tuple, this.qid, this.generalRanges);					//O(k*|qid|)
 			if(t2-t1<minDiff){
 				cl=eqcl;
 				minDiff=t2-t1;
-			}//may add one or two constaints for such actions
+			}//may add one or two constr aints for such actions
 		}
 		return cl;
 	}
@@ -122,6 +123,16 @@ public class AnonymizationByNCP extends Algorithm {
 		double stop=System.currentTimeMillis()-start;
 		
 		Algorithm.printResults(algo, stop);
+
+		/*
+		 * System.out.print("\t\tCount:"+algo.count+"");
+		 * int count=0;
+		for(EquivalenceClass a:algo.getResults())
+			if(a.size()>2*algo.getK())
+				count++;
+			System.out.print("\tBig classes:"+count+"\n");
+		 */
+				
 	}
 
 }

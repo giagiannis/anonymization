@@ -59,8 +59,7 @@ public class Mondrian extends Algorithm {
 		int index=0;
 		for(int i=0;i<this.qid.length;i++){
 			double currentRange=partition.getRangeByDimension(this.qid[i])/(1.0*this.generalRanges[i]);
-			if(currentRange>maxRange || 
-					(currentRange==maxRange && this.generalRanges[index]<this.generalRanges[i])){
+			if(currentRange>maxRange || (currentRange==maxRange && this.generalRanges[index]<this.generalRanges[i])){
 				maxRange=currentRange;
 				index=i;
 			}
