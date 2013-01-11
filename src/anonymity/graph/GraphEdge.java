@@ -39,4 +39,8 @@ public class GraphEdge {
 		this.weight=weight;
 	}
 	
+	public String toString(){
+		String buffer=this.from+"\t---("+String.format("%.2f", this.weight)+")---->\t"+this.to;
+		return buffer;
+	}	
 }
