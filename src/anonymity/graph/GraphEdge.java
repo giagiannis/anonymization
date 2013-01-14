@@ -2,45 +2,47 @@ package anonymity.graph;
 
 
 /**
- * Simple structure representing a graph edge with minimum allowed operations to.
+ * Simple structure representing a graph edge with minimum allowed operations nodeB.
  * The class contains two {@link GraphNode} elements and a weight between them.
- * Plain action are allowed to Class's objects like setting and getting the nodes and the weight.
+ * Plain action are allowed from Class's objects like setting and getting the nodes and the weight.
  * @author Giannis Giannakopoulos
  *
  */
-public class GraphEdge {
-	private GraphNode from, to;
+public class GraphEdge implements Comparable<GraphEdge>{
+
+	private GraphNode nodeA, nodeB;
 	private Double weight;
 	
-	public GraphEdge(GraphNode from, GraphNode to, Double weight){		//used like a weighted egde
-		this.from=from;
-		this.to=to;
+	public GraphEdge(GraphNode nodeA, GraphNode nodeB, Double weight){
+		this.nodeA=nodeA;
+		this.nodeB=nodeB;
 		this.weight=weight;
 	}
-	public GraphEdge(GraphNode from, GraphNode to){						//used like an un-weighted edge
-		this.from=from;
-		this.to=to;
-		this.weight=Double.NaN;
+	
+	public GraphNode getNodeA(){
+		return this.nodeA;
 	}
 	
-	public GraphNode getFrom(){
-		return this.from;
-	}
-	
-	public GraphNode getTo(){
-		return this.to;
+	public GraphNode getNodeB(){
+		return this.nodeB;
 	}
 	
 	public Double getWeight(){
 		return this.weight;
 	}
-	
-	public void updateWeight(Double weight){
-		this.weight=weight;
+
+	@Override
+	public int compareTo(GraphEdge o) {
+		if(this.getWeight()>o.getWeight())
+			return 1;
+		else if(this.getWeight()<o.getWeight())
+			return -1;
+		else
+			return 0;
 	}
 	
+	
 	public String toString(){
-		String buffer=this.from+"\t---("+String.format("%.2f", this.weight)+")---->\t"+this.to;
-		return buffer;
-	}	
+		return this.nodeA+"--("+String.format("%.2f", this.weight)+")-->"+this.nodeB;
+	}
 }

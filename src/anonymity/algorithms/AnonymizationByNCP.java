@@ -85,7 +85,7 @@ public class AnonymizationByNCP extends Algorithm {
 			if(t2-t1<minDiff){
 				cl=eqcl;
 				minDiff=t2-t1;
-			}//may add one or two constr aints for such actions
+			}//may add one or two constraints for such actions
 		}
 		return cl;
 	}

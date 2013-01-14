@@ -1,6 +1,7 @@
 package anonymity.graph;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import data.Tuple;
 
@@ -12,64 +13,56 @@ import data.Tuple;
  */
 public class GraphNode {
 
-	private HashSet<GraphEdge> edgesOut, edgesIn, edgesUndirected;
-	private HashSet<GraphNode> neighbors;
+	private Set<GraphEdge> edges;
 	private Tuple tuple;
 	
 	public GraphNode(Tuple t){
+		this.edges = new LinkedHashSet<GraphEdge>();
 		this.tuple=t;
-		this.edgesOut= new HashSet<GraphEdge>();
-		this.edgesIn= new HashSet<GraphEdge>();
-		this.edgesUndirected= new HashSet<GraphEdge>();
-		this.neighbors = new HashSet<GraphNode>();
 	}
 	
 	public Tuple getTuple(){
 		return this.tuple;
 	}
 	
-	public void addEdgeTo(GraphEdge e){
-		if(!this.edgesOut.contains(e))
-			this.edgesOut.add(e);
-		this.addEdge(e);
-
+	public void addEdge(GraphEdge e){
+		this.edges.add(e);
 	}
 	
-	public HashSet<GraphNode> getNeighbors(){
-		return this.neighbors;
+	public Set<GraphEdge> getEdges(){
+		return this.edges;
 	}
 	
-	public void addEdgeFrom(GraphEdge e){
-		if(!this.edgesIn.contains(e))
-			this.edgesIn.add(e);
-		this.addEdge(e);
+	public int getGrade(){
+		return this.edges.size();
 	}
 	
-	public final void addEdge(GraphEdge e){
-		if(!this.edgesUndirected.contains(e))
-			this.edgesUndirected.add(e);
-		if(e.getFrom().equals(this))
-			this.neighbors.add(e.getTo());
-		else
-			this.neighbors.add(e.getFrom());
+	public Set<GraphNode> getNeighbors(){
+		LinkedHashSet<GraphNode> neighbors= new LinkedHashSet<GraphNode>();
+		for(GraphEdge e:this.edges){
+			if(e.getNodeA().equals(this))
+				neighbors.add(e.getNodeB());
+			else
+				neighbors.add(e.getNodeA());
+		}
+		return neighbors;
 	}
-
-	public HashSet<GraphEdge> getEdgesTo() {
-		return edgesOut;
+	
+	public Set<GraphEdge> getEdgesToNeighbors(Set<GraphNode> neighbors){
+		Set<GraphEdge> set  =new LinkedHashSet<GraphEdge>();
+		for(GraphEdge e:this.edges)
+			if(neighbors.contains(e.getNodeA()) || neighbors.contains(e.getNodeB()))
+				set.add(e);
+		return set;
 	}
-
-	public HashSet<GraphEdge> getEdgesFrom() {
-		return edgesIn;
-	}
-
-	public HashSet<GraphEdge> getEdgesUndirected() {
-		return edgesUndirected;
+	
+	public void clearEdges(){
+		this.edges.clear();
 	}
 	
 	public String toString(){
 		String buffer="";
-		buffer="["+this.getTuple().toString()+"]";
+		buffer+="["+this.getTuple()+"]";
 		return buffer;
 	}
-	
 }

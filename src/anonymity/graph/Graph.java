@@ -1,9 +1,9 @@
 package anonymity.graph;
 
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
-
 
 import data.EquivalenceClass;
 import data.Tuple;
@@ -17,62 +17,81 @@ import data.Tuple;
  */
 
 public class Graph {
-	private LinkedList<GraphEdge> edges;
-	private LinkedList<GraphNode> nodes;
-	private int[] qid;
-	private int[] ranges;
+	private int qid[], ranges[], k;
+	private Set<GraphNode> nodes;
+	private Set<GraphEdge> edges;
 	
-	public Graph(int qid[], int ranges[]){
-		this.edges=new LinkedList<GraphEdge>();
-		this.nodes=new LinkedList<GraphNode>();
+	public Graph(){			//used when tree is populated outside the class
+		this.nodes=new LinkedHashSet<GraphNode>();
+		this.edges=new LinkedHashSet<GraphEdge>();
+	}
+	
+	public Graph(int qid[], int ranges[], int k){
 		this.qid=qid;
 		this.ranges=ranges;
+		this.k=k;
+		this.nodes=new LinkedHashSet<GraphNode>();
+		this.edges=new LinkedHashSet<GraphEdge>();
 	}
 	
+	public Set<GraphNode> getNodes(){
+		return this.nodes;
+	}
 	
-	public LinkedList<GraphEdge> getEdges() {
-		return edges;
-	}
-
-
-	public LinkedList<GraphNode> getNodes() {
-		return nodes;
-	}
-
-
-	public void addNode(GraphNode n){
-		this.nodes.add(n);
+	public Set<GraphEdge> getEdges(){
+		return this.edges;
 	}
 	
 	public void addEdge(GraphEdge e){
 		this.edges.add(e);
-		e.getFrom().addEdgeTo(e);
-		e.getTo().addEdgeFrom(e);
+		e.getNodeA().addEdge(e);
+		e.getNodeB().addEdge(e);
 	}
 	
-	public void populateGraph(EquivalenceClass data, int k){
-		for(Tuple t:data)
-			this.addNode(new GraphNode(t));
-		for(GraphNode n1:this.nodes){
-			HashSet<GraphNode> set = new HashSet<GraphNode>();
-			set.add(n1);
-			for(int i=0;i<k-1;i++){
-				GraphEdge e= this.getNearestNeighbor(n1, set);
-				if(!n1.getNeighbors().contains(e.getTo()))
-					this.addEdge(e);			//if an edge is already there i don't want to it
-				set.add(e.getTo());
+	public void removeEdge(GraphEdge e){
+		this.edges.remove(e);
+		e.getNodeA().getEdges().remove(e);
+		e.getNodeB().getEdges().remove(e);
+	}
+	
+	public void addNode(GraphNode n){
+		this.nodes.add(n);
+	}
+	
+	public void populateGraph(EquivalenceClass tuples){
+		for(Tuple t:tuples)
+			this.nodes.add(new GraphNode(t));
+		
+		Set<GraphNode> addedNodes= new LinkedHashSet<GraphNode>();
+		for(GraphNode n:this.nodes){
+			addedNodes.clear();
+			addedNodes.add(n);
+			for(int i=0;i<this.k-1;i++){
+				GraphEdge e=getNearestNode(n, addedNodes);
+				if(!n.getNeighbors().contains(e.getNodeB()))
+					this.addEdge(e);
+				addedNodes.add(e.getNodeB());
 			}
 		}
 	}
 	
-	private GraphEdge getNearestNeighbor(GraphNode n, Set<GraphNode> set){
+	public void clearEdgesFromNodes(){
+		for(GraphNode n:this.nodes)
+			n.clearEdges();
+	}
+	
+	public void setEdges(Set<GraphEdge> edges){
+		this.edges=edges;
+	}
+	
+	private GraphEdge getNearestNode(GraphNode n, Set<GraphNode> exceptions){
 		GraphNode chosen=null;
-		Double minDistance=Double.MAX_VALUE;
+		Double minDistance=Double.MAX_VALUE, currentDistance;
 		for(GraphNode o:this.nodes){
-			double currentDist= o.getTuple().getDistance(n.getTuple(), qid, ranges);
-			if(!set.contains(o) && minDistance>currentDist){
+			currentDistance=n.getTuple().getDistance(o.getTuple(), qid, ranges);
+			if(!exceptions.contains(o) && currentDistance< minDistance){
+				minDistance=currentDistance;
 				chosen=o;
-				minDistance=currentDist;
 			}
 		}
 		return new GraphEdge(n, chosen, minDistance);
@@ -81,33 +100,8 @@ public class Graph {
 	public String toString(){
 		String buffer="";
 		for(GraphNode n:this.nodes)
-			buffer+=n.toString()+"\n";
-		for(GraphEdge e:this.edges){
-			buffer+=e.toString()+"\n";
-		}
+			buffer+=n+"\t"+n.getGrade()+"\n";
+		buffer+=this.edges;
 		return buffer;
 	}
-	
-	public EquivalenceClass findNearestNeighbor(Tuple t, EquivalenceClass data){
-		EquivalenceClass res  = new EquivalenceClass();
-		if(data.size()<=2)
-			return res;
-		
-		return res;
-	}
-	
-	/*public static void main(String [] args) throws NumberFormatException, IOException{
-		ConfReader conf = new ConfReader(args[0]);
-		DataReader reader = new DataReader(conf.getValue("FILE"));
-		Integer numberOfTuples=new Integer(conf.getValue("TUPLES"));
-		EquivalenceClass data = new EquivalenceClass();
-		
-		int qid[]={0,1}, ranges[]={10,20};
-		for(int i=0;i<numberOfTuples;i++)
-			data.add(reader.getNextTuple());
-		Graph g = new Graph();
-		g.populateGraph(data, qid, ranges);
-	//	System.out.println(g);
-	}*/
-	
 }
