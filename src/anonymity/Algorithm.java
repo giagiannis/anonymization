@@ -99,6 +99,10 @@ public abstract class Algorithm {
 		return this.results;
 	}
 	
+	public double getResultsGCP(){
+		return this.getResults().getGCP(this.getQID(), this.getRanges(), this.getData().size());
+	}
+	
 	protected void addToResults(EquivalenceClass eq){
 		this.results.add(eq);
 	}
@@ -122,7 +126,8 @@ public abstract class Algorithm {
 		System.out.format("%.5f\t",gcp);
 		System.out.format("%.5f\t",algo.getResults().getSumOfNCP(algo.getQID(), algo.getRanges()));
 		System.out.print(algo.getResults().size()+"\t");
-		System.out.print(runningTime);
+		System.out.print(runningTime+"\t");
+		
 	}
 	
 }

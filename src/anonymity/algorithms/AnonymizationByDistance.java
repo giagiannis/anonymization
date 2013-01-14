@@ -42,14 +42,31 @@ public class AnonymizationByDistance extends Algorithm {
 	@Override
 	public void run() {
 		Random rand = new Random();
+		Tuple current=this.tuplesErased.get(false).get(rand.nextInt(this.tuplesErased.get(false).size())), previous=null;
 		while(!tuplesErased.get(false).isEmpty()){
-			Tuple t = this.tuplesErased.get(false).get(rand.nextInt(this.tuplesErased.get(false).size()));
-			EquivalenceClass ec=this.createECByDistance(t);
+			if(previous!=null){
+				current=getMostDistantTuple(previous, this.tuplesErased.get(true));
+			}
+			EquivalenceClass ec=this.createECByDistance(current);
 			if(ec!=null)
 				this.addToResults(ec);
+			previous=current;
 		}
-		
 	}
+	
+	private Tuple getMostDistantTuple(Tuple t, EquivalenceClass exceptions){
+		double maxDist=Double.MIN_VALUE;
+		Tuple chosen=null;
+		for(Tuple o:this.getData()){
+			Double current=o.getDistance(t, this.getQID(), this.getRanges());
+			if(current>maxDist && !exceptions.contains(o)){
+				maxDist=current;
+				chosen=o;
+			}
+		}
+		return chosen;
+	}
+
 	
 	private EquivalenceClass createECByDistance(Tuple tuple){
 		if(this.isAdded.get(tuple))
@@ -101,15 +118,15 @@ public class AnonymizationByDistance extends Algorithm {
 	}
 	
 	public static void main(String args[]) throws IOException{
-		/*	ConfReader conf = new ConfReader(args[0]);
+			ConfReader conf = new ConfReader(args[0]);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
 		String qid=conf.getValue("QID");
 		Integer k = new Integer(conf.getValue("K")), numberOfTuples=new Integer(conf.getValue("TUPLES"));
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		*/
-		if(args.length<2){
+		
+		/*if(args.length<2){
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
 		}
@@ -121,7 +138,7 @@ public class AnonymizationByDistance extends Algorithm {
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		
+		*/
 		
 		AnonymizationByDistance algo = new AnonymizationByDistance(qid, data);
 		algo.setK(k);

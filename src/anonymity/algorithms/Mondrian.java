@@ -1,9 +1,9 @@
 package anonymity.algorithms;
 
 import java.util.Arrays;
+import java.util.TreeMap;
 
 import anonymity.Algorithm;
-import anonymity.graph.GraphCreator;
 
 import readers.ConfReader;
 import readers.DataReader;
@@ -50,8 +50,7 @@ public class Mondrian extends Algorithm {
 				index = current.size();
 			for(EquivalenceClass cl:temp)
 				current.add(index, cl);
-		}
-		
+		}		
 	}
 	
 	private int chooseDimension(EquivalenceClass partition){
@@ -146,14 +145,15 @@ public class Mondrian extends Algorithm {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		/*	ConfReader conf = new ConfReader(args[0]);
+	/*	
+		ConfReader conf = new ConfReader(args[0]);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
 		String qid=conf.getValue("QID");
 		Integer k = new Integer(conf.getValue("K")), numberOfTuples=new Integer(conf.getValue("TUPLES"));
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		*/
+	*/	
 		if(args.length<2){
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
@@ -166,7 +166,7 @@ public class Mondrian extends Algorithm {
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		
+	
 		
 		Mondrian algo = new Mondrian(qid, data);
 		algo.setK(k);

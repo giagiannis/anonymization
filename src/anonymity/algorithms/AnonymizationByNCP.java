@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
+import readers.ConfReader;
 //import readers.ConfReader;
 import readers.DataReader;
 import data.EquivalenceClass;
@@ -95,14 +96,15 @@ public class AnonymizationByNCP extends Algorithm {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		/*	ConfReader conf = new ConfReader(args[0]);
+			ConfReader conf = new ConfReader(args[0]);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
 		String qid=conf.getValue("QID");
 		Integer k = new Integer(conf.getValue("K")), numberOfTuples=new Integer(conf.getValue("TUPLES"));
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		*/
+		
+		/*
 		if(args.length<2){
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
@@ -115,7 +117,7 @@ public class AnonymizationByNCP extends Algorithm {
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		
+		*/
 		AnonymizationByNCP algo = new AnonymizationByNCP(qid, data);
 		algo.setK(k);
 		double start=System.currentTimeMillis();

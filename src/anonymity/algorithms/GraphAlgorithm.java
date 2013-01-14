@@ -3,12 +3,9 @@ package anonymity.algorithms;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
 
 import data.EquivalenceClass;
 import readers.ConfReader;
@@ -26,11 +23,32 @@ public class GraphAlgorithm extends Algorithm {
 	@Override
 	public void run() {
 		Graph g = new Graph(this.getQID(), this.getRanges(), this.getK());
+		long start=System.currentTimeMillis();
 		g.populateGraph(this.getData());
-		System.out.println(g);
-		g.clearEdgesFromNodes();
-		this.runKruskal(g);
-		System.out.println(g);
+		System.out.println("Graph populated at:\t"+(System.currentTimeMillis()-start)+"ms");
+//		start=System.currentTimeMillis();
+//		g.clearEdgesFromNodes();
+//		this.runKruskal(g);
+//		System.out.println("Kruskal completed at:\t"+(System.currentTimeMillis()-start)+"ms");
+		
+		Set<GraphNode> visited=new LinkedHashSet<GraphNode>();
+		for(GraphNode n:g.getNodes()){
+			if(!visited.contains(n)){
+				Set<GraphNode> subGraph=this.runBFS(n);
+				visited.addAll(subGraph);
+				EquivalenceClass data = new EquivalenceClass();
+				for(GraphNode n1:subGraph)
+					data.add(n1.getTuple());
+				Mondrian mondrian = new Mondrian(this.qid,data);
+				mondrian.setK(this.getK());
+				mondrian.setStrictPartitioning();
+				mondrian.run();
+				System.out.println("Mondrian (with subgraph):\t"+mondrian.getResultsGCP());
+			}
+			else if(visited.size()==g.getNodes().size())
+					break;
+		}
+	//	System.out.println("Discrete parts:\t"+discreteParts);
 	}
 	
 	public void runKruskal(Graph g){
@@ -115,6 +133,12 @@ public class GraphAlgorithm extends Algorithm {
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
+		
+		Mondrian mondrian = new Mondrian(qid, data);
+		mondrian.setK(k);
+		mondrian.setStrictPartitioning();
+		mondrian.run();
+		System.out.println("Mondrian:\t"+mondrian.getResultsGCP());
 		
 		Algorithm algo = new GraphAlgorithm(qid,data);
 		algo.setK(k);
