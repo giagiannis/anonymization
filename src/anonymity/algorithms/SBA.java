@@ -7,7 +7,6 @@ import data.EquivalenceClass;
 import data.Tuple;
 
 import readers.DataReader;
-import anonymity.Algorithm;
 
 /**
  * This class is an implementation of a simple algorithm for achieving k-anonymity.<br/>
@@ -17,7 +16,7 @@ import anonymity.Algorithm;
  * @author Giannis Giannakopoulos
  *
  */
-public class SBA extends Algorithm {
+public class SBA extends AbstractAlgorithm {
 
 	private int depth;
 

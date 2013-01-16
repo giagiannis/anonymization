@@ -12,14 +12,13 @@ import readers.DataReader;
 import data.ECList;
 import data.EquivalenceClass;
 import data.Tuple;
-import anonymity.Algorithm;
 
 /**
- * Optimal Algorithm for k-anonymity. The complexity of the algorithm is exponential, show it must be used for really small data sets.
+ * Optimal AbstractAlgorithm for k-anonymity. The complexity of the algorithm is exponential, show it must be used for really small data sets.
  * @author Giannis Giannakopoulos
  *
  */
-public class OptimalAnonymity extends Algorithm {
+public class OptimalAnonymity extends AbstractAlgorithm {
 
 	private ECList combinations;
 	private HashMap<EquivalenceClass, ECList> foreign;
@@ -120,7 +119,7 @@ public class OptimalAnonymity extends Algorithm {
 		String qid=conf.getValue("QID");
 		Integer k = new Integer(conf.getValue("K"));
 		
-		Algorithm algo = new OptimalAnonymity(qid, data);
+		AbstractAlgorithm algo = new OptimalAnonymity(qid, data);
 		algo.setK(k);
 		algo.run();
 		

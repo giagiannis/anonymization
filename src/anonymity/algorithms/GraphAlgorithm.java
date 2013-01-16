@@ -10,12 +10,11 @@ import java.util.Set;
 import data.EquivalenceClass;
 import readers.ConfReader;
 import readers.DataReader;
-import anonymity.Algorithm;
 import anonymity.graph.Graph;
 import anonymity.graph.GraphEdge;
 import anonymity.graph.GraphNode;
 
-public class GraphAlgorithm extends Algorithm {
+public class GraphAlgorithm extends AbstractAlgorithm {
 
 	public GraphAlgorithm(String qid, EquivalenceClass data){
 		super(qid.split(" "), data);
@@ -140,7 +139,7 @@ public class GraphAlgorithm extends Algorithm {
 		mondrian.run();
 		System.out.println("Mondrian:\t"+mondrian.getResultsGCP());
 		
-		Algorithm algo = new GraphAlgorithm(qid,data);
+		AbstractAlgorithm algo = new GraphAlgorithm(qid,data);
 		algo.setK(k);
 		algo.run();
 		

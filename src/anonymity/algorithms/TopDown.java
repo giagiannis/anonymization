@@ -5,9 +5,8 @@ import java.io.IOException;
 import readers.DataReader;
 import data.EquivalenceClass;
 import data.Tuple;
-import anonymity.Algorithm;
 
-public class TopDown extends Algorithm {
+public class TopDown extends AbstractAlgorithm {
 
 	@Override
 	public void run() {

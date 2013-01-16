@@ -9,9 +9,8 @@ import readers.ConfReader;
 import readers.DataReader;
 import data.EquivalenceClass;
 import data.Tuple;
-import anonymity.Algorithm;
 
-public class AnonymizationByNCP extends Algorithm {
+public class AnonymizationByNCP extends AbstractAlgorithm {
 
 	private HashMap<Boolean, EquivalenceClass> visitedTuples;
 	private int count;
@@ -109,10 +108,10 @@ public class AnonymizationByNCP extends Algorithm {
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
 		}
-		DataReader reader = new DataReader(Algorithm.getArgument(args, "-file"));
-		String qid=Algorithm.getArgument(args, "-qid");
-		Integer k = new Integer(Algorithm.getArgument(args, "-k")), 
-				numberOfTuples=new Integer(Algorithm.getArgument(args, "-tuples"));
+		DataReader reader = new DataReader(AbstractAlgorithm.getArgument(args, "-file"));
+		String qid=AbstractAlgorithm.getArgument(args, "-qid");
+		Integer k = new Integer(AbstractAlgorithm.getArgument(args, "-k")), 
+				numberOfTuples=new Integer(AbstractAlgorithm.getArgument(args, "-tuples"));
 		
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
@@ -124,7 +123,7 @@ public class AnonymizationByNCP extends Algorithm {
 		algo.run();
 		double stop=System.currentTimeMillis()-start;
 		
-		Algorithm.printResults(algo, stop);
+		AbstractAlgorithm.printResults(algo, stop);
 
 		/*
 		 * System.out.print("\t\tCount:"+algo.count+"");

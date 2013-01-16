@@ -10,7 +10,6 @@ import java.util.Set;
 import data.EquivalenceClass;
 import data.Tuple;
 import readers.DataReader;
-import anonymity.Algorithm;
 
 /**
  * Clustering based algorithm for applying homogeneous k-anonymity property by local recoding.
@@ -18,7 +17,7 @@ import anonymity.Algorithm;
  *
  */
 
-public class DistanceBasedAnonymity extends Algorithm {
+public class DistanceBasedAnonymity extends AbstractAlgorithm {
 
 	public DistanceBasedAnonymity(String qid, EquivalenceClass data){
 		super(qid.split(" "), data);
@@ -132,20 +131,20 @@ public class DistanceBasedAnonymity extends Algorithm {
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
 		}
-		DataReader reader = new DataReader(Algorithm.getArgument(args, "-file"));
-		String qid=Algorithm.getArgument(args, "-qid");
-		Integer k = new Integer(Algorithm.getArgument(args, "-k")), 
-				numberOfTuples=new Integer(Algorithm.getArgument(args, "-tuples"));
+		DataReader reader = new DataReader(AbstractAlgorithm.getArgument(args, "-file"));
+		String qid=AbstractAlgorithm.getArgument(args, "-qid");
+		Integer k = new Integer(AbstractAlgorithm.getArgument(args, "-k")), 
+				numberOfTuples=new Integer(AbstractAlgorithm.getArgument(args, "-tuples"));
 		
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		Algorithm clustering = new DistanceBasedAnonymity(qid, data);
+		AbstractAlgorithm clustering = new DistanceBasedAnonymity(qid, data);
 		clustering.setK(k);
 		
 		double start= System.currentTimeMillis();
 		clustering.run();
-		Algorithm.printResults(clustering, System.currentTimeMillis()-start);
+		AbstractAlgorithm.printResults(clustering, System.currentTimeMillis()-start);
 	}
 
 }

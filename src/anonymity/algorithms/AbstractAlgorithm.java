@@ -1,4 +1,4 @@
-package anonymity;
+package anonymity.algorithms;
 
 import data.EquivalenceClass;
 import data.ECList;
@@ -11,7 +11,7 @@ import data.ECList;
  *
  */
 
-public abstract class Algorithm {
+public abstract class AbstractAlgorithm {
 
 	protected int[] qid;
 	protected int[] generalRanges;
@@ -19,17 +19,17 @@ public abstract class Algorithm {
 	private ECList results;
 	private int k;
 	
-	public Algorithm(){
+	public AbstractAlgorithm(){
 		this.results = new ECList();
 	}
 	
-	public Algorithm(int[] qid, EquivalenceClass data){
+	public AbstractAlgorithm(int[] qid, EquivalenceClass data){
 		this.setQID(qid);
 		this.setData(data);
 		this.results = new ECList();
 	}
 	
-	public Algorithm(String[] qid, EquivalenceClass data){
+	public AbstractAlgorithm(String[] qid, EquivalenceClass data){
 		this.setQID(qid);
 		this.setData(data);
 		this.results = new ECList();
@@ -119,7 +119,7 @@ public abstract class Algorithm {
 		return null;
 	}
 	
-	protected static void printResults(Algorithm algo, double runningTime){
+	protected static void printResults(AbstractAlgorithm algo, double runningTime){
 		// We suppose that script expects output like: "<gcp>\t<ncp sum>\t<number of eqcl>\t<time>"
 		
 		Double gcp=algo.getResults().getGCP(algo.getQID(), algo.getRanges(), algo.getData().size());

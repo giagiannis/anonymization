@@ -3,7 +3,6 @@ package anonymity.algorithms;
 import java.util.Arrays;
 import java.util.TreeMap;
 
-import anonymity.Algorithm;
 
 import readers.ConfReader;
 import readers.DataReader;
@@ -17,7 +16,7 @@ import data.Tuple;
  * @author Giannis Giannakopoulos
  *
  */
-public class Mondrian extends Algorithm {
+public class Mondrian extends AbstractAlgorithm {
 
 	private boolean relaxedPartitioning=true;
 	private boolean bfs=true;
@@ -158,10 +157,10 @@ public class Mondrian extends Algorithm {
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
 		}
-		DataReader reader = new DataReader(Algorithm.getArgument(args, "-file"));
-		String qid=Algorithm.getArgument(args, "-qid");
-		Integer k = new Integer(Algorithm.getArgument(args, "-k")), 
-				numberOfTuples=new Integer(Algorithm.getArgument(args, "-tuples"));
+		DataReader reader = new DataReader(AbstractAlgorithm.getArgument(args, "-file"));
+		String qid=AbstractAlgorithm.getArgument(args, "-qid");
+		Integer k = new Integer(AbstractAlgorithm.getArgument(args, "-k")), 
+				numberOfTuples=new Integer(AbstractAlgorithm.getArgument(args, "-tuples"));
 		
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
@@ -176,6 +175,6 @@ public class Mondrian extends Algorithm {
 		algo.run();
 		double stop = System.currentTimeMillis()-start;
 	
-		Algorithm.printResults(algo, stop);
+		AbstractAlgorithm.printResults(algo, stop);
 	}
 }

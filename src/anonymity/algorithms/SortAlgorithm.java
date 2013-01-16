@@ -8,7 +8,6 @@ import readers.ConfReader;
 import readers.DataReader;
 import data.EquivalenceClass;
 import data.Tuple;
-import anonymity.Algorithm;
 
 /**
  * Implementation of a simple, linear time algorithm that separates tuples to equivalence classes based on their values at the most important 
@@ -18,7 +17,7 @@ import anonymity.Algorithm;
  * @author Giannis Giannakopoulos
  *
  */
-public class SortAlgorithm extends Algorithm {
+public class SortAlgorithm extends AbstractAlgorithm {
 
 	private EquivalenceClass sortData;
 	public SortAlgorithm(String qid, EquivalenceClass data) {
@@ -91,22 +90,22 @@ public class SortAlgorithm extends Algorithm {
 			System.err.println("I need arguments (-file, -qid, -k, -tuples)");
 			System.exit(1);
 		}
-		DataReader reader = new DataReader(Algorithm.getArgument(args, "-file"));
-		String qid=Algorithm.getArgument(args, "-qid");
-		Integer k = new Integer(Algorithm.getArgument(args, "-k")), 
-				numberOfTuples=new Integer(Algorithm.getArgument(args, "-tuples"));
+		DataReader reader = new DataReader(AbstractAlgorithm.getArgument(args, "-file"));
+		String qid=AbstractAlgorithm.getArgument(args, "-qid");
+		Integer k = new Integer(AbstractAlgorithm.getArgument(args, "-k")), 
+				numberOfTuples=new Integer(AbstractAlgorithm.getArgument(args, "-tuples"));
 		
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
 		
-		Algorithm algo = new SortAlgorithm(qid, data);
+		AbstractAlgorithm algo = new SortAlgorithm(qid, data);
 		algo.setK(k);
 		double start=System.currentTimeMillis();
 		algo.run();
 		double stop=System.currentTimeMillis()-start;
 		
-		Algorithm.printResults(algo,stop);
+		AbstractAlgorithm.printResults(algo,stop);
 		
 	}
 }
