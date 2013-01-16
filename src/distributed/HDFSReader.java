@@ -1,4 +1,4 @@
-package mapred;
+package distributed;
 
 import java.io.IOException;
 
