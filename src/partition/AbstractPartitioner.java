@@ -1,5 +1,11 @@
 package partition;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import readers.ConfReader;
+import readers.DataReader;
 import data.ECList;
 import data.EquivalenceClass;
 
@@ -16,6 +22,7 @@ public abstract class AbstractPartitioner {
 	private int qid[];
 	private EquivalenceClass data;
 	private ECList partitions;
+	private int numberOfPartitions;
 	
 	public AbstractPartitioner(){
 		this.partitions = new ECList();
@@ -25,6 +32,14 @@ public abstract class AbstractPartitioner {
 		this.setQID(qid);
 		this.setData(data);
 		this.partitions = new ECList();
+	}
+	
+	public void setNumberOfPartitions(int numberOfPartitions){
+		this.numberOfPartitions=numberOfPartitions;
+	}
+	
+	public int getNumberOfPartitions(){
+		return this.numberOfPartitions;
 	}
 	
 	public void setQID(int qid[]){
@@ -57,5 +72,17 @@ public abstract class AbstractPartitioner {
 		return this.partitions;
 	}
 	
+	public void setPartitions(ECList partitions){
+		this.partitions=partitions;
+	}
+	
 	public abstract void createPartitions();
+	
+	public static void presentPartitions(ECList partitions){
+		int i=0;
+		for(EquivalenceClass e:partitions){
+			i++;
+			System.out.println(i+":\t"+e.size());
+		}
+	}
 }
