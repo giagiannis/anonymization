@@ -1,14 +1,14 @@
 package anonymity.algorithms;
 
 import java.io.IOException;
+
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
 
 import data.EquivalenceClass;
 import data.Tuple;
-import readers.ConfReader;
 import readers.DataReader;
 import anonymity.Algorithm;
 
@@ -18,55 +18,65 @@ import anonymity.Algorithm;
  *
  */
 
-public class Clustering extends Algorithm {
+public class DistanceBasedAnonymity extends Algorithm {
 
-	public Clustering(String qid, EquivalenceClass data){
+	public DistanceBasedAnonymity(String qid, EquivalenceClass data){
 		super(qid.split(" "), data);
 	}
 	
 	@Override
 	public void run() {
 		Set<Tuple> visited=new LinkedHashSet<Tuple>();
-		EquivalenceClass notVisited = (EquivalenceClass)this.getData().clone();
+		EquivalenceClass notVisited = (EquivalenceClass) this.getData().clone();
 		Tuple current=null;
-		double start= System.currentTimeMillis();
+		this.chooseTuple(null, visited, notVisited);
 		while(notVisited.size()>=this.getK()){							//this method runs as long as there exist plenty of data to be grouped
 			current=chooseTuple(current, visited, notVisited);
-			
 			EquivalenceClass res = new EquivalenceClass(this.getQID());
-			for(int i=0;i<this.getK();i++){
-				Tuple t=this.getClosestTuple(current, visited);
-				notVisited.remove(t);
-				visited.add(t);
-				res.add(t);
+			while(res.size()<this.getK()){
+				Tuple close=this.getClosestTuple(current, visited, notVisited);
+				res.add(close);
+				visited.add(close);
+				notVisited.remove(close);
+				
+				EquivalenceClass temp=new EquivalenceClass();
+				for(Tuple t:notVisited){
+					if(res.containsTuple(t)){
+						temp.add(t);
+					}
+				}
+				
+				notVisited.removeAll(temp);
+				visited.addAll(temp);
+				res.merge(temp);
 			}
+			
 			this.addToResults(res);
 		}
 		
 		for(Tuple t:notVisited)											// the remainders (something like n mod k) are grouped to the closest groups
 			this.getClosestEquivalenceClass(t).add(t);
-
-		Algorithm.printResults(this, System.currentTimeMillis()-start);
 		
 	}
 	
-	private Tuple chooseTuple(Tuple previous, Set<Tuple> visited, EquivalenceClass notVisited){
+	private Tuple chooseTuple(Tuple previous, Set<Tuple> visited, List<Tuple> notVisited){
 		Tuple chosenTuple=null;
 		Random rand = new Random();
 		if(previous==null)
 			chosenTuple=notVisited.get(rand.nextInt(notVisited.size()));
 		else
 			chosenTuple=previous;
+		chosenTuple=getMostDistantTuple(chosenTuple, visited, notVisited);
+//		System.out.println(chosenTuple);
 		
-		for(int i=0;i<3;i++)
-			chosenTuple=getMostDistantTuple(chosenTuple, visited);
 		return chosenTuple;
 	}
 	
-	private Tuple getMostDistantTuple(Tuple tuple, Set<Tuple> visited){
+	private Tuple getMostDistantTuple(Tuple tuple, Set<Tuple> visited, List<Tuple> notVisited){
 		Double maxDistance=Double.MIN_VALUE;
 		Tuple chosen=null;
-		for(Tuple t:this.getData()){
+		for(Tuple t:notVisited){
+//			System.out.println(tuple+" vs "+t);
 			Double dist = t.getEucleidianDistance(tuple, this.getQID(), this.getRanges());
 			if(!visited.contains(t) && dist>maxDistance){
 				chosen=t;
@@ -79,20 +89,22 @@ public class Clustering extends Algorithm {
 	private EquivalenceClass getClosestEquivalenceClass(Tuple t){
 		EquivalenceClass res=null;
 		Double minNCP=Double.MAX_VALUE;
+		int population=Integer.MAX_VALUE;
 		for(EquivalenceClass eq:this.getResults()){
 			Double current=(eq.getNCPwithOtherTuple(t, this.getQID(), this.getRanges())-eq.getNCP(this.getQID(), this.getRanges()));
-			if(current<minNCP){
+			if(current<minNCP || (current==minNCP && population>eq.size())){
 				res=eq;
 				minNCP=current;
+				population=eq.size();
 			}
 		}
 		return res;
 	}
 	
-	private Tuple getClosestTuple(Tuple tuple, Set<Tuple> visited){
+	private Tuple getClosestTuple(Tuple tuple, Set<Tuple> visited, List<Tuple> notVisited){
 		Double minDistance=Double.MAX_VALUE;
 		Tuple chosen=null;
-		for(Tuple t:this.getData()){
+		for(Tuple t:notVisited){
 			Double dist = t.getEucleidianDistance(tuple, this.getQID(), this.getRanges());
 			if(!visited.contains(t) && dist<minDistance){
 				chosen=t;
@@ -128,11 +140,12 @@ public class Clustering extends Algorithm {
 		EquivalenceClass data = new EquivalenceClass();
 		for(int i=0;i<numberOfTuples;i++)
 			data.add(reader.getNextTuple());
-		
-		Algorithm clustering = new Clustering(qid, data);
+		Algorithm clustering = new DistanceBasedAnonymity(qid, data);
 		clustering.setK(k);
-		clustering.run();
 		
+		double start= System.currentTimeMillis();
+		clustering.run();
+		Algorithm.printResults(clustering, System.currentTimeMillis()-start);
 	}
 
 }

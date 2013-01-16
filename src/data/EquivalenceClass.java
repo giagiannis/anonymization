@@ -2,6 +2,12 @@ package data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Map.Entry;
+
+import javax.swing.plaf.metal.MetalIconFactory.TreeLeafIcon;
 
 /**
  * @author Giannis Giannakopoulos	
@@ -149,6 +155,53 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	public void merge(EquivalenceClass other){
 		for(Tuple tuple:other)
 			this.add(tuple);
+	}
+	
+	public boolean containsTuple(Tuple t){
+		if(this.qid!=null){
+			for(int d:this.qid)
+				if(t.getValue(d)<this.min.get(d) || t.getValue(d)>this.max.get(d))
+					return false;
+		}
+		else
+			return false;
+		return true;
+	}
+	
+	public ECList split(int qid[], int ranges[]){			//splits one equivalence class to two almost equal equivalence classes
+		if(this.qid==null)
+			return null;
+		ECList results = new ECList();
+		double maxNormalDistance=Double.MIN_VALUE;
+		int dim=-1;
+		for(int i=0;i<this.qid.length;i++){
+			double current=(this.max.get(this.qid[i])-this.min.get(this.qid[i]))/(1.0*ranges[i]);
+			if(current>maxNormalDistance){
+				dim=this.qid[i];
+				maxNormalDistance=current;
+			}
+		}
+		TreeMap<Integer, EquivalenceClass> sorter = new TreeMap<Integer, EquivalenceClass>();
+		for(Tuple t:this){
+			int value=t.getValue(dim);
+			if(sorter.containsKey(value))
+				sorter.get(value).add(t);
+			else
+				sorter.put(value, new EquivalenceClass(t));
+		}
+		EquivalenceClass temp = new EquivalenceClass();
+		for(EquivalenceClass eq:sorter.values())
+			temp.merge(eq);
+		EquivalenceClass one = new EquivalenceClass();
+		for(int i=0;i<temp.size()/2;i++)
+			one.add(temp.get(i));
+		results.add(one);
+		
+		one.clear();
+		for(int i=temp.size()/2;i<temp.size();i++)
+			one.add(temp.get(i));
+		results.add(one);
+		return results;
 	}
 	
 	public static void main(String[] args){

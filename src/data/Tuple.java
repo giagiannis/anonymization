@@ -67,8 +67,10 @@ public class Tuple {
 	
 	public double getEucleidianDistance(Tuple other, int[] qid, int[] ranges){
 		double sum=0.0;
-		for(int i=0;i<qid.length;i++)
-			sum+=Math.pow(Math.abs(other.getValue(qid[i])-this.getValue(qid[i]))/(ranges[i]*1.0), 2);
+		for(int i=0;i<qid.length;i++){
+			double prod=Math.abs(other.getValue(qid[i])-this.getValue(qid[i]))/(ranges[i]*1.0);
+			sum+=prod*prod;
+		}
 		return Math.sqrt(sum);
 		
 	}
