@@ -20,8 +20,8 @@ public class RandomPartitioner extends AbstractPartitioner {
 		super();
 	}
 	
-	public RandomPartitioner(String[] qid, EquivalenceClass data) {
-		super(qid, data);
+	public RandomPartitioner(String qid, EquivalenceClass data) {
+		super(qid.split(" "), data);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class RandomPartitioner extends AbstractPartitioner {
 		for(int i=0;i<tuples;i++)
 			data.add(reader.getNextTuple());
 		
-		AbstractPartitioner part = new RandomPartitioner(qid.split(" "), data);
+		AbstractPartitioner part = new RandomPartitioner(qid, data);
 		part.setNumberOfPartitions(numberOfPartitions);
 
 		part.createPartitions();

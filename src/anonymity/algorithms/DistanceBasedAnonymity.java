@@ -33,7 +33,13 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 			current=chooseTuple(current, visited, notVisited);
 			EquivalenceClass res = new EquivalenceClass(this.getQID());
 			while(res.size()<this.getK()){
-				Tuple close=this.getClosestTuple(current, visited, notVisited);
+				Tuple close=null;
+				try {
+					close = this.getClosestTuple(current, visited, notVisited);
+				} catch (Exception e) {
+					System.err.println(e.getMessage()+" happened when visited vs notVisited was:\t" +visited.size()+" vs"+ notVisited.size());
+					System.exit(1);
+				}
 				res.add(close);
 				visited.add(close);
 				notVisited.remove(close);
@@ -52,10 +58,8 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 			
 			this.addToResults(res);
 		}
-		
 		for(Tuple t:notVisited)											// the remainders (something like n mod k) are grouped to the closest groups
 			this.getClosestEquivalenceClass(t).add(t);
-		
 	}
 	
 	private Tuple chooseTuple(Tuple previous, Set<Tuple> visited, List<Tuple> notVisited){
@@ -67,13 +71,17 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 			chosenTuple=previous;
 		chosenTuple=getMostDistantTuple(chosenTuple, visited, notVisited);
 //		System.out.println(chosenTuple);
-		
+		if(chosenTuple==null && previous==null){
+			System.err.println(chosenTuple);
+			System.exit(1);
+		}
+			
 		return chosenTuple;
 	}
 	
 	private Tuple getMostDistantTuple(Tuple tuple, Set<Tuple> visited, List<Tuple> notVisited){
 		Double maxDistance=Double.MIN_VALUE;
-		Tuple chosen=null;
+		Tuple chosen=notVisited.get(0);
 		for(Tuple t:notVisited){
 //			System.out.println(tuple+" vs "+t);
 			Double dist = t.getEucleidianDistance(tuple, this.getQID(), this.getRanges());
@@ -86,7 +94,7 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 	}
 	
 	private EquivalenceClass getClosestEquivalenceClass(Tuple t){
-		EquivalenceClass res=null;
+		EquivalenceClass res=this.getResults().get(0);
 		Double minNCP=Double.MAX_VALUE;
 		int population=Integer.MAX_VALUE;
 		for(EquivalenceClass eq:this.getResults()){
@@ -100,9 +108,11 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 		return res;
 	}
 	
-	private Tuple getClosestTuple(Tuple tuple, Set<Tuple> visited, List<Tuple> notVisited){
+	private Tuple getClosestTuple(Tuple tuple, Set<Tuple> visited, List<Tuple> notVisited) throws Exception{
 		Double minDistance=Double.MAX_VALUE;
-		Tuple chosen=null;
+		Tuple chosen=notVisited.get(0);
+		if(tuple==null)
+			throw new Exception("Shit happens!!");
 		for(Tuple t:notVisited){
 			Double dist = t.getEucleidianDistance(tuple, this.getQID(), this.getRanges());
 			if(!visited.contains(t) && dist<minDistance){

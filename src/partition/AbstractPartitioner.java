@@ -8,6 +8,7 @@ import readers.ConfReader;
 import readers.DataReader;
 import data.ECList;
 import data.EquivalenceClass;
+import data.Tuple;
 
 /**
  * Abstract class for all partitioning methods. This class contains (and implements) all these
@@ -23,6 +24,7 @@ public abstract class AbstractPartitioner {
 	private EquivalenceClass data;
 	private ECList partitions;
 	private int numberOfPartitions;
+	private int[] ranges;
 	
 	public AbstractPartitioner(){
 		this.partitions = new ECList();
@@ -44,16 +46,20 @@ public abstract class AbstractPartitioner {
 	
 	public void setQID(int qid[]){
 		this.qid=qid;
+		this.ranges = new int[this.qid.length];
 	}
 	
 	public void setQID(String qid[]){
 		this.qid=new int[qid.length];
 		for(int i=0;i<qid.length;i++)
 			this.qid[i]=new Integer(qid[i]);
+		this.ranges = new int[this.qid.length];
 	}
 	
 	public void setData(EquivalenceClass data){
 		this.data=data;
+		for(int i=0;i<this.qid.length;i++)
+			this.ranges[i]=this.data.getRangeByDimension(this.qid[i]);
 	}
 	
 	public EquivalenceClass getData(){
@@ -62,6 +68,10 @@ public abstract class AbstractPartitioner {
 	
 	public int[] getQID(){
 		return this.qid;
+	}
+	
+	public int[] getRanges(){
+		return this.ranges;
 	}
 	
 	protected void addPartition(EquivalenceClass partition){

@@ -1,10 +1,10 @@
 package partition;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import readers.ConfReader;
 import readers.DataReader;
@@ -20,8 +20,8 @@ public class SortPartitioner extends AbstractPartitioner {
 		this.sortedData = new LinkedList<TupleComparable>();
 	}
 
-	public SortPartitioner(String[] qid, EquivalenceClass data) {
-		super(qid, data);
+	public SortPartitioner(String qid, EquivalenceClass data) {
+		super(qid.split(" "), data);
 		this.sortedData = new LinkedList<TupleComparable>();
 	}
 
@@ -32,8 +32,6 @@ public class SortPartitioner extends AbstractPartitioner {
 		int count;
 		
 		count=this.sortedData.size()/this.getNumberOfPartitions();
-		System.out.println(this.getData().size());
-		System.out.println(this.sortedData.size());
 		int index=0;
 		EquivalenceClass partition=new EquivalenceClass();
 		for(TupleComparable t:this.sortedData){
@@ -80,8 +78,8 @@ public class SortPartitioner extends AbstractPartitioner {
 	private void sortData(){
 		for(Tuple t:this.getData())
 			this.sortedData.add(new TupleComparable(t, this.sortedQID));
+		Collections.sort(this.sortedData);
 	}
-	
 	
 	/**
 	 * @param args
@@ -98,7 +96,7 @@ public class SortPartitioner extends AbstractPartitioner {
 		for(int i=0;i<tuples;i++)
 			data.add(reader.getNextTuple());
 		
-		AbstractPartitioner part = new SortPartitioner(qid.split(" "), data);
+		AbstractPartitioner part = new SortPartitioner(qid, data);
 		part.setNumberOfPartitions(numberOfPartitions);
 
 		part.createPartitions();
@@ -124,6 +122,7 @@ class TupleComparable implements Comparable<TupleComparable>{
 	public String toString(){
 		return this.tuple.toString();
 	}
+	
 	@Override
 	public int compareTo(TupleComparable o) {
 		for(int d:this.qid){

@@ -18,7 +18,7 @@ import data.Tuple;
  */
 public class Mondrian extends AbstractAlgorithm {
 
-	private boolean relaxedPartitioning=true;
+	private boolean relaxedPartitioning=false;
 	private boolean bfs=true;
 	
 	public Mondrian(){ 
