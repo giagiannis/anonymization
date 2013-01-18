@@ -28,7 +28,7 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 		Set<Tuple> visited=new LinkedHashSet<Tuple>();
 		EquivalenceClass notVisited = (EquivalenceClass) this.getData().clone();
 		Tuple current=null;
-		this.chooseTuple(null, visited, notVisited);
+//		this.chooseTuple(null, visited, notVisited);
 		while(notVisited.size()>=this.getK()){							//this method runs as long as there exist plenty of data to be grouped
 			current=chooseTuple(current, visited, notVisited);
 			EquivalenceClass res = new EquivalenceClass(this.getQID());
@@ -64,9 +64,8 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 	
 	private Tuple chooseTuple(Tuple previous, Set<Tuple> visited, List<Tuple> notVisited){
 		Tuple chosenTuple=null;
-		Random rand = new Random();
 		if(previous==null)
-			chosenTuple=notVisited.get(rand.nextInt(notVisited.size()));
+			chosenTuple=notVisited.get(0);
 		else
 			chosenTuple=previous;
 		chosenTuple=getMostDistantTuple(chosenTuple, visited, notVisited);
