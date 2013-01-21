@@ -5,6 +5,7 @@ import java.io.IOException;
 import anonymity.algorithms.AbstractAlgorithm;
 import anonymity.algorithms.DistanceBasedAnonymity;
 import anonymity.algorithms.Mondrian;
+import anonymity.algorithms.SortAlgorithm;
 	
 
 import data.ECList;
@@ -68,7 +69,7 @@ public class CentralApplication {
 		int numberOfTuples=part.getData().size();
 		System.out.print(results.getGCP(qid, ranges, numberOfTuples)+"\t");
 		System.out.print(results.getSumOfNCP(qid, ranges)+"\t");
-		System.out.print(results.size()+"\n");
+		System.out.print(results.size()+"\t");
 	}
 	
 	public static void main(String[] args) throws IOException{
@@ -79,15 +80,38 @@ public class CentralApplication {
 		//confParser(args[0]);
 		commandLineParser(args);
 		
-		AbstractPartitioner partitioner = new DaCPartitioner(qid, data);
+		AbstractPartitioner partitioner = new SortPartitioner(qid, data);
 		
 		partitioner.setNumberOfPartitions(numberOfPartitions);
 		partitioner.createPartitions();
 		
-		ECList results=new ECList();
+	/*	ECList results=new ECList();
 		for(EquivalenceClass data:partitioner.getPartitions()){
 			AbstractAlgorithm algo = new Mondrian(qid, data);
 			algo.setK(k);
+			algo.run();
+			results.merge(algo.getResults());
+		}
+		presentResults(results, partitioner);
+		
+		results.clear();
+		for(EquivalenceClass data:partitioner.getPartitions()){
+			AbstractAlgorithm algo = new DistanceBasedAnonymity(qid, data);
+			algo.setK(k);
+			algo.run();
+			results.merge(algo.getResults());
+		}
+		presentResults(results, partitioner);
+		
+		*/
+		ECList	results = new ECList();
+		for(EquivalenceClass data:partitioner.getPartitions()){
+			for(int i=0;i<partitioner.getQID().length;i++)
+				System.out.print(partitioner.getQID()[i]+"["+partitioner.getRanges()[i]+"]\t");
+			System.out.println();
+			AbstractAlgorithm algo = new SortAlgorithm(qid, data);
+			algo.setK(k);
+			algo.setRanges(partitioner.getRanges());
 			algo.run();
 			results.merge(algo.getResults());
 		}

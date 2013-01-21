@@ -54,6 +54,15 @@ public abstract class AbstractAlgorithm {
 	}
 	
 	/**
+	 * Used when the algorithm runs on a subdomain of the entire space. Used when the algorithm takes as input a partition of
+	 * the space.
+	 * @param ranges
+	 */
+	public void setRanges(int[] ranges){
+		this.generalRanges=ranges.clone();
+	}
+	
+	/**
 	 * Get qid as an int array
 	 * @return 
 	 */

@@ -1,6 +1,7 @@
 package anonymity.algorithms;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -24,6 +25,7 @@ public class SortAlgorithm extends AbstractAlgorithm {
 		super(qid.split(" "), data);
 		this.sortData = new EquivalenceClass();
 	}
+	
 	@Override
 	public void run() {
 		this.sortQID();
@@ -47,14 +49,25 @@ public class SortAlgorithm extends AbstractAlgorithm {
 	}
 	
 	private void sortQID(){
-		TreeMap<Integer, Integer> sortQid = new TreeMap<Integer, Integer>();
-		for(int i:this.qid)
-			sortQid.put(this.getData().getRangeByDimension(i), i);
+		TreeMap<Integer, LinkedList<Integer>> sortQid = new TreeMap<Integer, LinkedList<Integer>>();
+		for(int d:this.getQID()){
+			Integer range=this.getData().getRangeByDimension(d);
+			if(sortQid.containsKey(range))
+				sortQid.get(range).add(d);
+			else{
+				LinkedList<Integer> temp = new LinkedList<Integer>();
+				temp.add(d);
+				sortQid.put(range, temp);
+			}
+		}
 
 		int i=0;
-		for(Entry<Integer, Integer> e:sortQid.entrySet()){
-			this.qid[i]=e.getValue();
-			i++;
+		for(Entry<Integer, LinkedList<Integer>> e:sortQid.entrySet()){
+			for(Integer d:e.getValue()){
+				this.qid[i]=d;
+				this.generalRanges[i]=e.getKey();
+				i++;
+			}
 		}
 	}
 	
@@ -78,7 +91,8 @@ public class SortAlgorithm extends AbstractAlgorithm {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-	/*	ConfReader conf = new ConfReader(args[0]);
+	/*	
+		ConfReader conf = new ConfReader(args[0]);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
 		String qid=conf.getValue("QID");
 		Integer k = new Integer(conf.getValue("K")), numberOfTuples=new Integer(conf.getValue("TUPLES"));
@@ -115,7 +129,7 @@ class TupleComparable implements Comparable<TupleComparable>{
 	private Tuple tuple;
 	private int qid[];
 	public TupleComparable(int qid[], Tuple t){
-		tuple=t;
+		this.tuple=t;
 		this.qid=qid;
 	}
 	
