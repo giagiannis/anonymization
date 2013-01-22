@@ -6,8 +6,6 @@ import anonymity.algorithms.AbstractAlgorithm;
 import anonymity.algorithms.DistanceBasedAnonymity;
 import anonymity.algorithms.Mondrian;
 import anonymity.algorithms.SortAlgorithm;
-	
-
 import data.ECList;
 import data.EquivalenceClass;
 import partition.AbstractPartitioner;
@@ -24,11 +22,13 @@ public class CentralApplication {
 	private static int numberOfPartitions;
 	private static int tuples;
 	private static EquivalenceClass data;
+	private static String partitionType;
 	
 	/**
 	 * @param args
 	 */
 	
+	@SuppressWarnings("unused")
 	private static void confParser(String confname) throws IOException{
 		ConfReader conf = new ConfReader(confname);
 		DataReader reader = new DataReader(conf.getValue("FILE"));
@@ -60,30 +60,41 @@ public class CentralApplication {
 		data=new EquivalenceClass();
 		for(int i=0;i<tuples;i++)
 			data.add(reader.getNextTuple());
+		partitionType=getValueAsArg(args, "-partType");
 		
 	}
 	
-	private static void presentResults(ECList results, AbstractPartitioner part){
+	private static void presentResults(ECList results, AbstractPartitioner part, double time){
 		int[] qid=part.getQID();
 		int[] ranges=part.getRanges();
 		int numberOfTuples=part.getData().size();
-		System.out.print(results.getGCP(qid, ranges, numberOfTuples)+"\t");
-		System.out.print(results.getSumOfNCP(qid, ranges)+"\t");
+		System.out.format("%.5f\t",results.getGCP(qid, ranges, numberOfTuples));
+		System.out.format("%.5f\t",results.getSumOfNCP(qid, ranges));
 		System.out.print(results.size()+"\t");
+		System.out.format("%.0f\t", time);
 	}
 	
 	public static void main(String[] args) throws IOException{
-		if(args.length<1){
-			System.out.println("I need a configuration file!");
+		if(args.length<12){
+			System.err.println("Needed arguments:\n\t-k\t\t<k factor>\n\t-tuples\t\t<# of tuples>\n\t-partitions\t<# of partitions>\n\t-file\t\t<file name>\n\t-qid\t\t\"<qid>\"\n\t-partType\t<rand|sort|dac>");
 			System.exit(1);
 		}
-		//confParser(args[0]);
 		commandLineParser(args);
 		
-		AbstractPartitioner partitioner = new SortPartitioner(qid, data);
-		
-		partitioner.setNumberOfPartitions(numberOfPartitions);
-		partitioner.createPartitions();
+		AbstractPartitioner sortPartition=null;
+		if(partitionType.equals("sort"))
+			sortPartition= new SortPartitioner(qid, data);
+		else if(partitionType.equals("dac"))
+			sortPartition = new DaCPartitioner(qid,data);
+		else if(partitionType.equals("rand"))
+			sortPartition = new RandomPartitioner(qid, data);
+		else{
+			System.err.println("Not a valid partitioning type!!");
+			System.exit(1);
+		}
+	
+		sortPartition.setNumberOfPartitions(numberOfPartitions);
+		sortPartition.createPartitions();
 		
 	/*	ECList results=new ECList();
 		for(EquivalenceClass data:partitioner.getPartitions()){
@@ -105,30 +116,41 @@ public class CentralApplication {
 		
 		*/
 		ECList	results = new ECList();
-		for(EquivalenceClass data:partitioner.getPartitions()){
-			for(int i=0;i<partitioner.getQID().length;i++)
-				System.out.print(partitioner.getQID()[i]+"["+partitioner.getRanges()[i]+"]\t");
-			System.out.println();
+		double start=0;
+		double stop=0;
+		for(EquivalenceClass data:sortPartition.getPartitions()){
 			AbstractAlgorithm algo = new SortAlgorithm(qid, data);
 			algo.setK(k);
-			algo.setRanges(partitioner.getRanges());
+			algo.setRanges(sortPartition.getRanges());
+			start=System.currentTimeMillis();
 			algo.run();
+			stop=System.currentTimeMillis()-start;
 			results.merge(algo.getResults());
 		}
-		presentResults(results, partitioner);
+		presentResults(results, sortPartition, stop);
 		
-/*		partitioner = new RandomPartitioner(qid, data);
-		partitioner.setNumberOfPartitions(numberOfPartitions);
-		partitioner.createPartitions();
+		results = new ECList();
+		for(EquivalenceClass data:sortPartition.getPartitions()){
+			AbstractAlgorithm algo = new Mondrian(qid, data);
+			algo.setK(k);
+			algo.setRanges(sortPartition.getRanges());
+			start=System.currentTimeMillis();
+			algo.run();
+			stop=System.currentTimeMillis()-start;
+			results.merge(algo.getResults());
+		}
+		presentResults(results, sortPartition, stop);
 		
-		results=new ECList();
-		for(EquivalenceClass data:partitioner.getPartitions()){	
+		results = new ECList();
+		for(EquivalenceClass data:sortPartition.getPartitions()){
 			AbstractAlgorithm algo = new DistanceBasedAnonymity(qid, data);
 			algo.setK(k);
+			algo.setRanges(sortPartition.getRanges());
+			start=System.currentTimeMillis();
 			algo.run();
+			stop=System.currentTimeMillis()-start;
 			results.merge(algo.getResults());
 		}
-		presentResults(results, partitioner);
-*/		
+		presentResults(results, sortPartition,stop);
 	}
 }

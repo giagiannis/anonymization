@@ -46,6 +46,8 @@ public class DistanceBasedAnonymity extends AbstractAlgorithm {
 				
 				EquivalenceClass temp=new EquivalenceClass();
 				for(Tuple t:notVisited){
+					if(temp.size()+res.size()>2*this.getK())
+						break;
 					if(res.containsTuple(t)){
 						temp.add(t);
 					}

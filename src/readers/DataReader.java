@@ -22,15 +22,22 @@ public class DataReader {
 	}
 	
 	public EquivalenceClass getTuples() throws IOException{
-		while(this.file.ready())
-			this.set.add(new Tuple(this.file.readLine().split(",")));
+		while(this.file.ready()){
+			String buffer=this.file.readLine();
+			if(buffer.charAt(0)!='#' || buffer.charAt(0)=='"')
+				this.set.add(new Tuple(buffer.split(",")));
+		}
 		this.file.close();
 		return this.set;
 	}
 	
 	public Tuple getNextTuple() throws IOException{
-		if(this.file.ready())
-			return new Tuple(this.file.readLine().split(","));
+		if(this.file.ready()){
+			String buffer=this.file.readLine();
+			while(buffer.charAt(0)=='#' || buffer.charAt(0)=='"')
+				buffer=this.file.readLine();
+			return new Tuple(buffer.split(","));
+		}
 		else{
 			this.file.close();
 			return null;

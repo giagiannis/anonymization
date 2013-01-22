@@ -103,7 +103,8 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 	public double getNCP(int qid[], int ranges[]){
 		double sum=0;
 		for(int i=0;i<qid.length;i++)
-			sum+=getRangeByDimension(qid[i])/(1.0*ranges[i]);
+			if(ranges[i]!=0)
+				sum+=getRangeByDimension(qid[i])/(1.0*ranges[i]);
 		return sum;
 	}
 	
@@ -118,7 +119,8 @@ public class EquivalenceClass extends ArrayList<Tuple> {
 					max=t.getValue(d);
 				if(min>t.getValue(d))
 					min=t.getValue(d);
-				sum+=(max-min)*1.0/(ranges[count]);
+				if(ranges[count]!=0)
+					sum+=(max-min)*1.0/(ranges[count]);
 				count++;
 			}
 		}
