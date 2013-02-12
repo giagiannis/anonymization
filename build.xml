@@ -4,8 +4,7 @@
 	<!-- set global properties for this build -->
 	<property name="src"	location="src" />
 	<property name="bin"	location="bin" />
-	<property name="jar"	location="/home/giannis/anonymity.jar"/>
-	<property name="remote"	value="giannis@ggian.cslab.ece.ntua.gr:~"/>
+	<property name="jar"	location="$HOME/anonymity.jar"/>
 	
 	<target name="init" description="creates necessary dirs">
 		<!-- Create the time stamp -->
